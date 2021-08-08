@@ -1,11 +1,9 @@
-
 import pygame
 import cv2
 import numpy
 import time
 
 pygame.init()
-pygame.display.set_mode()
 
 def mouseover(imagen,coordenadas):
   mouse=False
@@ -17,7 +15,7 @@ def mouseover(imagen,coordenadas):
       mouse=True
   #print(coordenadas,x,y,imagen)
   return mouse
-
+    
 class Boton():
 
   def __init__(self,tipo,imagen,coordenadas):
@@ -42,74 +40,96 @@ class Boton():
       if mouse2==False:
         self.ima = pygame.image.load("botones/niveles_0.png").convert_alpha()
         self.mouse=False
-
-class Objeto():
-    def __init__(self,nombre,ubx,uby):
-
-        self.image = pygame.image.load(
-            "assets/carga_pos_2.png").convert_alpha()
-        self.nombre = nombre
-
-        if nombre == "positivo":
-            self.image = pygame.image.load(
-                "assets/carga_pos_2.png").convert_alpha()
-
-
-        elif nombre == "negativo":
-            self.image = pygame.image.load(
-                "assets/carga_neg_2.png").convert_alpha()
-
-        elif nombre == "neutro":
-            self.image = pygame.image.load(
-                "assets/carga_net_2.png").convert_alpha()
-
-        elif nombre == "maquina":
-            self.image = pygame.image.load(
-                "assets/maquina_fusion.png").convert_alpha()
         
-        elif nombre == "tablero":
-          self.image=pygame.image.load(
-                "assets/tablero MK II.png").convert_alpha()
-
-        self.posip= m.trannp(ubx,uby)
 
 
-class Grid():
-  def __init__(self,size,start):
-    mb=[] 
-    mb1=[]
-    mn=[]
+class Objeto(pygame.sprite.Sprite):
+  def __init__(self, nombre):
+    super().__init__()
+    self.image = pygame.image.load("assets/carga_pos_2.png").convert_alpha()
+    self.nombre = nombre
+    if nombre == "positivo":
+        self.image = pygame.image.load("assets/carga_pos_2.png").convert_alpha()
+        
+    elif nombre == "negativo":
+        self.image = pygame.image.load("assets/carga_neg_2.png").convert_alpha()
+            
+    elif nombre == "neutro":
+        self.image = pygame.image.load("assets/carga_net_2.png").convert_alpha()
+            
+    elif nombre == "maquina":
+        self.image = pygame.image.load("assets/maquina_fusion.png").convert_alpha()
 
-    for j in range(8):
-      mb1=[]
-      mn1=[]
-      for i in range(8):
-        b=(j,i)
-        k=(((i*size)+start[0]),((j*size)+start[1]))
-        mb1.append(b)
-        mn1.append(k)
-        #print(mb1)
-      mb.append(mb1)
-      mn.append(mn1)
-
-    #print(mb[5][3])
-    #print(mn[5][3])
-    self.matrizp=mn
-    self.matrizb=mb
-  
-# traduce de numeros a pixeles 
-  def trannp(self,x,y):
-    p=self.matrizp[x][y]
-    return p
-# traduce de pixeles a numeros
-  def tranpn(self,x,y):
-    p=self.matrizb[x][y]
-    return p
+        self.rect = self.image.get_rect()
 
 
-m=Grid(64,(500,100))
+class Casilla(pygame.sprite.Sprite):
+    def __init__(self, posX, posY):
+        super().__init__()
+        self.objeto = Objeto("")
+        self.posX = posX
+        self.posY = posY
+        self.tieneJugador = False
+        
+class Tablero():
+    def __init__(self):
+        super().__init__()
+        self.matriz = []
+        self.iniX = 384
+        self.iniY = 204
 
+        for i in range(8):
+            self.matriz.append([])
+            for j in range(8):
+                self.matriz[i].append(
+                    Casilla(self.iniX + (i * 64), self.iniY + (j * 64)))
 
+        self.matriz[0][0].tieneJugador = True
+
+        self.matriz[3][3].objeto = Objeto("positivo")
+        self.matriz[6][3].objeto = Objeto("negativo")
+        self.matriz[2][6].objeto = Objeto("maquina")
+
+#Jugador
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load("assets/pc_personaje.png").convert_alpha()
+        self.image.set_colorkey(black)
+        self.rect = self.image.get_rect()
+        self.speed_x = 0
+        self.speed_y = 0
+        self.currentX = 0
+        self.currentY = 0
+        #self.rect.x = 0
+        #self.rect.y = posY
+        #self.rect.height = 64
+        #self.rect.width = 64
+
+    def change_speed(self, x, y):
+        self.currentX = self.speed_x
+        self.currentY = self.speed_y
+        if self.speed_y==0 and y == -1:
+          return   
+        if self.speed_x==0 and x == -1:
+          return
+        if self.speed_y==7 and y == 1:
+          return
+        if self.speed_x==7 and x == 1:
+          return
+        self.speed_x += x
+        self.speed_y += y
+
+    ''''
+    def update(self):
+        self.rect.x += self.speed_x
+        self.rect.y += self.speed_y
+    '''
+   
+    def setPos(self, posX, posY):
+        self.rect.x = posX
+        self.rect.y = posY
+        playerposition=[posX,posY]
 
 class Gamestate():
   def __init__(self):
@@ -149,7 +169,7 @@ class Gamestate():
   def nivel_1(self):
     #Cositas para el Reloj
     timer_font = pygame.font.SysFont('Consolas', 30)
-    global timer_sec
+    timer_sec = 60
     timer_text = timer_font.render(time.strftime('%M:%S', time.gmtime(timer_sec)), True, (255, 255, 255))
     timer = pygame.USEREVENT + 1        
     pygame.time.set_timer(timer, 1000)
@@ -158,8 +178,10 @@ class Gamestate():
         if event.type == pygame.QUIT:
             done = True
         screen.blit(tablero2, [0, 0])
-        screen.blit(tablero, [384, 104])
-   
+        screen.blit(tablero, [384, 204])
+        
+        
+        
         
         #Reloj
         if event.type == timer: 
@@ -219,54 +241,35 @@ class Gamestate():
 
 
 
-
-
-class pos():
-  def __init__(self,ubx,uby):
-    self.posxn=ubx
-    self.posyn=uby
-    self.posn=(self.posxn,self.posyn)
-    self.posp=m.trannp(self.posxn,self.posyn)
-  
-  def changepos(self,dirc):
-    if dirc=='down':
-      self.pos
-
-
-
-
-carga1pos=pos(3,5)
-
-carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
-
-tablero = Objeto('tablero',0,0)
-tablero2 = pygame.image.load("assets/tablero2.png").convert()
 size = (1280, 720)
 screen = pygame.display.set_mode(size)
-
 clock = pygame.time.Clock()
+game_state = Gamestate()
 
+all_sprites_list = pygame.sprite.Group()
 done = False
 
+portada=tablero = pygame.image.load("assets/title card.png").convert()
+tablero = pygame.image.load("assets/tablero MK II.png").convert()
+tablero2 = pygame.image.load("assets/tablero2.png").convert()
 
-  '''
-  for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            done = True
-        screen.blit(tablero2, [0, 0])
+boton1a=pygame.image.load('botones/jugar_0.png').convert_alpha()
+boton1b=pygame.image.load('botones/jugar_1.png').convert_alpha()
+boton1=Boton('jugar','botones/jugar_0.png',[640-152,420-32])
+player = Player()
+UI=pygame.image.load('botones/margenes.png').convert_alpha()
+all_sprites_list.add(player)
+tablero1 = Tablero()
+
+coorxy=[640,420]
+
+#crear diferentes loops en esta clase, cada loop es un nivel o una pantalla
 
 
-        carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn)) 
-        screen.blit(tablero.image, tablero.posip)
-        screen.blit(carga1.image,carga1.posip)
-        if event.type == pygame.KEYDOWN:
-          if event.key == pygame.K_DOWN:
-            carga1pos.changepos('down')
-
-  '''
 while not done:
- 
+  
+      
     game_state.cambia_nivel()
-    clock.tick()
+    clock.tick(60)
 
 pygame.quit()
