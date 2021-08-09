@@ -64,8 +64,14 @@ class Objeto():
         elif nombre == "tablero":
           self.image=pygame.image.load("assets/tablero MK II.png").convert_alpha()
 
-        self.posip= m.trannp(ubx,uby)
+          self.image=pygame.image.load("assets/pc_personaje.png").convert_alpha()
+       
+        else:
+          pass
 
+
+
+        self.posip= m.trannp(ubx,uby)
 
 class Grid():
     def __init__(self,size,start):
@@ -99,9 +105,7 @@ class Grid():
         p=self.matrizb[x][y]
         return p
 
-
 m=Grid(64,(500,100))
-
 
 class Gamestate():
     def __init__(self):
@@ -147,12 +151,26 @@ class Gamestate():
             if event.type == pygame.QUIT:
                 done = True
             screen.blit(tablero2, [0, 0])
-            carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn)) 
             screen.blit(tablero.image, tablero.posip)
+            carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn)) 
+
+            player=Player('player',playerpos.posxn,playerpos.posyn)
+            screen.blit(player.image, player.posip)
+            
             screen.blit(carga1.image,carga1.posip)
+
+
             if event.type == pygame.KEYDOWN:
               if event.key == pygame.K_DOWN:
-                carga1pos.changepos('down')
+                playerpos.changepos('down')
+              if event.key == pygame.K_UP:
+                playerpos.changepos('up')
+              if event.key == pygame.K_LEFT:
+                playerpos.changepos('left')
+              if event.key == pygame.K_RIGHT:
+                playerpos.changepos('right')
+              
+              
             
             #Reloj
             if event.type == timer: 
@@ -163,11 +181,24 @@ class Gamestate():
                 else:
                       pygame.time.set_timer(timer, 0)
             
-        screen.blit(timer_text, [300, 300])
+            screen.blit(timer_text, [300, 300])
                 
 
         pygame.display.flip()
 
+class Player(Objeto):
+  def __init__(self,nombre,ubx,uby):
+    super().__init__(nombre,ubx,uby)
+    
+    #aqui es para cambiar el sprite 
+    
+    self.orientacion='der'
+    if self.orientacion=='der':
+      self.image=pygame.image.load("assets/pc_personaje.png").convert_alpha()
+
+    #if self.orientacion=='der'
+    
+  
 
 class pos():
     def __init__(self,ubx,uby):
@@ -178,14 +209,20 @@ class pos():
   
     def changepos(self,dirc):
         if dirc=='down':
-            self.posxn= self.posxn+1
-
+          self.posxn= self.posxn+1
+        if dirc=='up':
+          self.posxn= self.posxn-1
+        if dirc == 'right':
+          self.posyn= self.posyn+1
+        if dirc=='left':
+          self.posyn= self.posyn-1
 
 game_state = Gamestate()
 
 carga1pos=pos(3,5)
+playerpos=pos(0,0)
 
-carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
+
 
 tablero = Objeto('tablero',0,0)
 tablero2 = pygame.image.load("assets/tablero2.png").convert()
