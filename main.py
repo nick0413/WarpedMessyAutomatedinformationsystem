@@ -178,6 +178,7 @@ class Gamestate():
              
             player=Player('player',playerpos.posxn,playerpos.posyn)
             carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
+            
             #print(carga1pos.posn,'====>',carga1pos.posxn)
             screen.blit(tablero.image, tablero.posip)
             screen.blit(UI,[0,0])
@@ -418,7 +419,10 @@ class pos():
           #print(posobj, 'Funciona condicion1==========')
         return posobj
         
-          
+
+def listapos()
+
+
 
 
 game_state = Gamestate()
