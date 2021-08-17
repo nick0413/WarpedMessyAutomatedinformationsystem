@@ -186,10 +186,11 @@ class Gamestate():
             
 
             if event.type == pygame.KEYDOWN:
-              if not player.grab:
+              if not grab:
                   #movimiento jugador
                   if event.key == pygame.K_DOWN:
                     playerpos.changepos('down')
+
                   if event.key == pygame.K_UP:
                     playerpos.changepos('up')
                   if event.key == pygame.K_LEFT:
@@ -217,7 +218,6 @@ class Gamestate():
               if grab==True:
                 player.grab=True
                 
-                print(grab,'=====>player grab=true')
             
               if player.grab==True:
                   
@@ -278,80 +278,105 @@ class pos():
 
       #MOVIMIENTO HACIA ABAJO
       if dirc=='down':
+        if self.posxn!=7:
             #Carga a la izquierda del personaje
             if parent=='izquierda':
+              self.posxn= self.posxn+1
               obj.posxn= self.posxn
               print('moviendo izquierda',obj.posxn)
             #Carga a la derecha del personaje
             if parent=='derecha':
+              self.posxn= self.posxn+1
               obj.posxn= self.posxn
               print('moviendo derecha',obj.posxn)
             #Carga arriba del personaje
             if parent=='arriba':
+              self.posxn= self.posxn+1
               obj.posxn=self.posxn-1
               print('moviendo arriba',obj.posxn)
             #Carga abajo del personaje  
             if parent=='abajo':
-              obj.posxn=self.posxn+1
+              if self.posxn!=6:
+                self.posxn= self.posxn+1
+                obj.posxn=self.posxn+1
+
               print('moviendo abajo',obj.posxn)
 
 
 
       if dirc=='up':
-          #Carga a la izquierda del personaje
+        if self.posxn!=0:
+            #Carga a la izquierda del personaje
             if parent=='izquierda':
+              self.posxn= self.posxn-1
               obj.posxn= self.posxn
               print('moviendo izquierda',obj.posxn)
             #Carga a la derecha del personaje
             if parent=='derecha':
+              self.posxn= self.posxn-1
               obj.posxn= self.posxn
               print('moviendo derecha',obj.posxn)
             #Carga arriba del personaje
             if parent=='arriba':
-              obj.posxn=self.posxn-1
+              if self.posxn!=1:
+                self.posxn= self.posxn-1
+                obj.posxn=self.posxn-1
               print('moviendo arriba',obj.posxn)
             #Carga abajo del personaje  
             if parent=='abajo':
+              self.posxn= self.posxn-1
               obj.posxn=self.posxn+1
               print('moviendo abajo',obj.posxn)
 
 
       
       if dirc=='right':
+        if self.posyn!=7:
           #Carga a la izquierda del personaje
             if parent=='izquierda':
+              self.posyn= self.posyn+1
               obj.posyn= self.posyn-1
-              print(obj.posyn, self.posyn)
+
               print('moviendo izquierda',obj.posxn)
             #Carga a la derecha del personaje
             if parent=='derecha':
-              obj.posyn= self.posyn+1
+              if self.posyn!=6:
+                self.posyn= self.posyn+1
+                obj.posyn= self.posyn+1
               print('moviendo derecha',obj.posxn)
             #Carga arriba del personaje
             if parent=='arriba':
+              self.posyn= self.posyn+1
               obj.posyn=self.posyn
               print('moviendo arriba',obj.posxn)
             #Carga abajo del personaje  
             if parent=='abajo':
+              self.posyn= self.posyn+1
               obj.posyn=self.posyn
               print('moviendo abajo',obj.posxn)
 
 
       if dirc=='left':
+        if self.posyn!=0:
           #Carga a la izquierda del personaje
             if parent=='izquierda':
-              obj.posyn= self.posyn-1
-              print('moviendo izquierda',obj.posxn)
+              if self.posyn!=1:
+                self.posyn= self.posyn-1 
+                obj.posyn= self.posyn-1
+                print('moviendo izquierda',obj.posxn)
             #Carga a la derecha del personaje
             if parent=='derecha':
+              self.posyn= self.posyn-1 
               obj.posyn= self.posyn+1
               print('moviendo derecha',obj.posxn)
             #Carga arriba del personaje
             if parent=='arriba':
+              self.posyn= self.posyn-1 
               obj.posyn=self.posyn
               print('moviendo arriba',obj.posxn)
             #Carga abajo del personaje  
             if parent=='abajo':
+              self.posyn= self.posyn-1 
               obj.posyn=self.posyn
               print('moviendo abajo',obj.posxn)
          
@@ -360,22 +385,26 @@ class pos():
               
     def parent(self,obj):
         
-        dx=self.posn[1]-obj.posn[1]
-        dy=self.posn[0]-obj.posn[0]
+        dy=self.posxn-obj.posxn
+        dx=self.posyn-obj.posyn
+
+       
+          
         posobj=[0,0]
-        if dx==1:
+        if dx==1 and dy==0:
           parent='izquierda'
           print('1')
           
-        elif dx==-1:
+        elif dx==-1 and dy==0 :
+
           parent='derecha'
           print('2')
 
-        elif dy==1:
+        elif dy==1 and dx==0:
           parent='arriba'
           print('3')
           
-        elif dy==-1:
+        elif dy==-1 and dx==0:
           parent='abajo'
           print('4')
 
