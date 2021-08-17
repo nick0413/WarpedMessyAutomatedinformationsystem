@@ -178,7 +178,7 @@ class Gamestate():
              
             player=Player('player',playerpos.posxn,playerpos.posyn)
             carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
-            print(carga1pos.posn,'====>',carga1pos.posxn)
+            #print(carga1pos.posn,'====>',carga1pos.posxn)
             screen.blit(tablero.image, tablero.posip)
             screen.blit(UI,[0,0])
             screen.blit(player.image,player.posip)
@@ -203,7 +203,8 @@ class Gamestate():
               if event.key == pygame.K_SPACE:        
                   grab=True
                   print('parent fue creado')
-                  parent=playerpos.parent(carga1pos)
+                  parent,dx,dy=playerpos.parent(carga1pos)
+                  print(parent,dx,dy)
 
               if event.key == pygame.K_e:
                 if grab==True:
@@ -219,6 +220,8 @@ class Gamestate():
                 print(grab,'=====>player grab=true')
             
               if player.grab==True:
+                  
+
                   print('')
                   if event.key == pygame.K_DOWN:
                     playerpos.changeparent(carga1pos,'down',parent)
@@ -253,15 +256,19 @@ class pos():
         self.posp=m.trannp(self.posxn,self.posyn)
 
     def changepos(self,dirc):
-        if dirc=='down':
-            self.posxn= self.posxn+1
-        if dirc=='up':
-            self.posxn= self.posxn-1
-        if dirc=='left':
-            self.posyn= self.posyn-1
-        if dirc=='right':
-            self.posyn= self.posyn+1
-        self.posn=[self.posxn,self.posyn]
+        if self.posxn!=7:
+            if dirc=='down':
+                self.posxn= self.posxn+1
+        if self.posxn!=0:       
+            if dirc=='up':
+                self.posxn= self.posxn-1
+        if self.posyn!=7:               
+            if dirc=='right':
+                self.posyn= self.posyn+1
+        if self.posyn!=0: 
+            if dirc=='left':
+                self.posyn= self.posyn-1                
+            self.posn=[self.posxn,self.posyn]
 
     
     def changeparent(self,obj,dirc,parent):
@@ -290,7 +297,6 @@ class pos():
 
 
 
-
       if dirc=='up':
           #Carga a la izquierda del personaje
             if parent=='izquierda':
@@ -302,14 +308,12 @@ class pos():
               print('moviendo derecha',obj.posxn)
             #Carga arriba del personaje
             if parent=='arriba':
-              obj.posxn=self.posxn+1
+              obj.posxn=self.posxn-1
               print('moviendo arriba',obj.posxn)
             #Carga abajo del personaje  
             if parent=='abajo':
-              obj.posxn=self.posxn-1
+              obj.posxn=self.posxn+1
               print('moviendo abajo',obj.posxn)
-
-
 
 
       
@@ -336,11 +340,11 @@ class pos():
       if dirc=='left':
           #Carga a la izquierda del personaje
             if parent=='izquierda':
-              obj.posyn= self.posyn+1
+              obj.posyn= self.posyn-1
               print('moviendo izquierda',obj.posxn)
             #Carga a la derecha del personaje
             if parent=='derecha':
-              obj.posyn= self.posyn-1
+              obj.posyn= self.posyn+1
               print('moviendo derecha',obj.posxn)
             #Carga arriba del personaje
             if parent=='arriba':
@@ -378,7 +382,7 @@ class pos():
         else:
           parent='no'
           
-        return parent
+        return parent,dx,dy
           
           
           #posobj[1]=self.posn[1]-1
