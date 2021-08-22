@@ -175,16 +175,41 @@ class Gamestate():
             if event.type == pygame.QUIT:
                 done = True
             screen.blit(tablero2, [0, 0])
-             
+            equilibrio=False 
+
+
+            L=[carga1pos, carga2pos]
+            
+            #Crea copia de L en q
+            while not equilibrio:
+              q=[]
+              for i in range(len(L)):
+                q.append(i)
+              print('recurrencia')
+              cercania(L)
+
+
+              #Verifica si ya no hay interacciones
+              for i in L:
+                
+              for j in q: 
+
+
+            
+
+
+
+            
             player=Player('player',playerpos.posxn,playerpos.posyn)
             carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
+            carga2=Objeto('positivo',(carga2pos.posxn),(carga2pos.posxn))
             
             #print(carga1pos.posn,'====>',carga1pos.posxn)
             screen.blit(tablero.image, tablero.posip)
             screen.blit(UI,[0,0])
             screen.blit(player.image,player.posip)
             screen.blit(carga1.image,carga1.posip)
-            
+            screen.blit(carga2.image,carga2.posip)
 
             if event.type == pygame.KEYDOWN:
               if not grab:
@@ -418,7 +443,58 @@ class pos():
           #posobj[1]=self.posn[1]-1
           #print(posobj, 'Funciona condicion1==========')
         return posobj
-        
+
+
+
+def cercania(L):
+  q=[]
+  for i in L:
+    q.append(i)
+  
+  for i in q:
+    
+    k=i.posxn
+    j=i.posyn
+    
+    for o in q:
+      g= o.posxn
+      h = o.posyn
+      if abs(k-g)==1:
+
+        print('aaaaaaaaaaaaa',i.tipo, i.pos, o.tipo, o.pos)
+        #no son neutros
+        if i.tipo!='neutro' and o.tipo!='neutro':
+          
+          #TIENEN CARGA IGUAL
+          if i.tipo==o.tipo:
+            #print('repeler===>',i.tipo, i.pos, o.tipo, o.pos)
+
+            if i.pos>o.pos:
+              i.posxn=i.posxn+1
+              o.posxn=o.posxn-1
+            if i.posxn<o.posxn:
+              i.posxn=i.posxn-1
+              o.posxn=o.posxn+1
+            #print('repelido===>',i.tipo, i.pos, o.tipo, o.pos)
+            
+          #TIENEN DIFERENTE CARGA
+          if i.tipo !=o.tipo:
+            print('atraido===>',i.tipo, i.pos, o.tipo, o.pos)
+            if i.posxn>o.posxn:
+              i.posxn=i.posxn-1
+
+            if i.posxn<o.posxn:
+              i.posxn=i.posxn+1
+
+
+            
+        #print('cumple cercania====>',i.tipo, i.pos, o.tipo, o.pos)
+
+        q.remove(i)
+        q.remove(o)
+
+
+
 
 #def listapos()
 
@@ -428,6 +504,8 @@ class pos():
 game_state = Gamestate()
 
 carga1pos=pos(2,1)
+
+carga2pos=pos(5,5)
 
 playerpos=pos(0,0)
 carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
