@@ -108,24 +108,28 @@ m=Grid(64,(500,100))
 
 
 class Player(Objeto):
-  def __init__(self,nombre,ubx,uby):
+  def __init__(self,nombre,ubx,uby, sentido='0'):
     super().__init__(nombre,ubx,uby)
     
     
     self.grab=None
 
-
-      
-    #aqui es para cambiar el sprite 
-    self.orientacion='der'
-
-    if self.orientacion=='der':
-      self.image=pygame.image.load("assets/pc_personaje.png").convert_alpha()
-
-
+    if sentido=='down':
+        self.image=pygame.image.load("assets/perdown.png").convert_alpha()
+        print('cambio abajo')
+    if sentido=='up':
+        self.image=pygame.image.load("assets/perup.png").convert_alpha()
+        print('cambio up')
+    if sentido=='left':
+        self.image=pygame.image.load("assets/perleft.png").convert_alpha()
+        print('cambio izquiera')
+    if sentido=='right':
+        self.image=pygame.image.load("assets/perright.png").convert_alpha()
+        print('cambio derecha')
+    else:
+        self.image=pygame.image.load("assets/personaje.png").convert_alpha()
 
         
-
 
 
 
@@ -161,46 +165,48 @@ class Gamestate():
         pygame.display.flip()
 
 
+
     def nivel_1(self):
         #Cositas para el Reloj
         timer_font = pygame.font.SysFont('Consolas', 30)
-        global timer_sec
+        global timer_sec      
         timer_text = timer_font.render(time.strftime('%M:%S', time.gmtime(timer_sec)), True, (255, 255, 255))
         timer = pygame.USEREVENT + 1        
         pygame.time.set_timer(timer, 1000)
         global grab
         global parent
-        
+        global sentido
+
+ 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
             screen.blit(tablero2, [0, 0])
-            equilibrio=False 
 
 
-            L=[carga1pos, carga2pos]
+
+            # L=[carga1pos, carga2pos]
             
-            #Crea copia de L en q
-            while not equilibrio:
-              q=[]
-              for i in range(len(L)):
-                q.append(i)
-              print('recurrencia')
-              cercania(L)
+            # #Crea copia de L en q
+            # while not equilibrio:
+            #   q=[]
+            #   for i in range(len(L)):
+            #     q.append(i)
+            #   print('recurrencia')
+            #   cercania(L)
 
 
-              #Verifica si ya no hay interacciones
-              for i in L:
+            #   #Verifica si ya no hay interacciones
+            #   for i in L:
                 
-              for j in q: 
+            #   for j in q: 
+
+        
 
 
-            
 
-
-
-            
-            player=Player('player',playerpos.posxn,playerpos.posyn)
+            print(sentido)
+            player=Player('player',playerpos.posxn,playerpos.posyn,sentido)
             carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
             carga2=Objeto('positivo',(carga2pos.posxn),(carga2pos.posxn))
             
@@ -216,13 +222,16 @@ class Gamestate():
                   #movimiento jugador
                   if event.key == pygame.K_DOWN:
                     playerpos.changepos('down')
-
+                    sentido='down'
                   if event.key == pygame.K_UP:
                     playerpos.changepos('up')
+                    sentido='up'
                   if event.key == pygame.K_LEFT:
                     playerpos.changepos('left')
+                    sentido='left'
                   if event.key == pygame.K_RIGHT:
                     playerpos.changepos('right')
+                    sentido='right'
                   #funcion de coger
 
                 
@@ -246,9 +255,6 @@ class Gamestate():
                 
             
               if player.grab==True:
-                  
-
-                  print('')
                   if event.key == pygame.K_DOWN:
                     playerpos.changeparent(carga1pos,'down',parent)
                   if event.key == pygame.K_UP:
@@ -500,6 +506,7 @@ def cercania(L):
 
 
 
+sentido='0'
 
 game_state = Gamestate()
 
