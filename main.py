@@ -65,6 +65,7 @@ class Objeto():
           self.image=pygame.image.load("assets/tablero MK II.png").convert_alpha()
 
         self.posip= m.trannp(ubx,uby)
+        self.posin=[ubx,uby]
 
 
 class Grid():
@@ -101,6 +102,31 @@ class Grid():
 
 
 m=Grid(64,(500,100))
+
+
+
+
+
+class Player(Objeto):
+  def __init__(self,nombre,ubx,uby):
+    super().__init__(nombre,ubx,uby)
+    
+    
+    self.grab=None
+
+
+      
+    #aqui es para cambiar el sprite 
+    self.orientacion='der'
+
+    if self.orientacion=='der':
+      self.image=pygame.image.load("assets/pc_personaje.png").convert_alpha()
+
+
+
+        
+
+
 
 
 class Gamestate():
@@ -142,17 +168,96 @@ class Gamestate():
         timer_text = timer_font.render(time.strftime('%M:%S', time.gmtime(timer_sec)), True, (255, 255, 255))
         timer = pygame.USEREVENT + 1        
         pygame.time.set_timer(timer, 1000)
-      
+        global grab
+        global parent
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 done = True
             screen.blit(tablero2, [0, 0])
-            carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn)) 
+            equilibrio=False 
+
+
+            L=[carga1pos, carga2pos]
+            
+            #Crea copia de L en q
+            while not equilibrio:
+              q=[]
+              for i in range(len(L)):
+                q.append(i)
+              print('recurrencia')
+              cercania(L)
+
+
+              #Verifica si ya no hay interacciones
+              for i in L:
+                
+              for j in q: 
+
+
+            
+
+
+
+            
+            player=Player('player',playerpos.posxn,playerpos.posyn)
+            carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
+            carga2=Objeto('positivo',(carga2pos.posxn),(carga2pos.posxn))
+            
+            #print(carga1pos.posn,'====>',carga1pos.posxn)
             screen.blit(tablero.image, tablero.posip)
+            screen.blit(UI,[0,0])
+            screen.blit(player.image,player.posip)
             screen.blit(carga1.image,carga1.posip)
+            screen.blit(carga2.image,carga2.posip)
+
             if event.type == pygame.KEYDOWN:
-              if event.key == pygame.K_DOWN:
-                carga1pos.changepos('down')
+              if not grab:
+                  #movimiento jugador
+                  if event.key == pygame.K_DOWN:
+                    playerpos.changepos('down')
+
+                  if event.key == pygame.K_UP:
+                    playerpos.changepos('up')
+                  if event.key == pygame.K_LEFT:
+                    playerpos.changepos('left')
+                  if event.key == pygame.K_RIGHT:
+                    playerpos.changepos('right')
+                  #funcion de coger
+
+                
+
+              if event.key == pygame.K_SPACE:        
+                  grab=True
+                  print('parent fue creado')
+                  parent,dx,dy=playerpos.parent(carga1pos)
+                  print(parent,dx,dy)
+
+              if event.key == pygame.K_e:
+                if grab==True:
+                  grab=False
+                  player.grab=False
+                  print('grab false')
+
+            
+
+              if grab==True:
+                player.grab=True
+                
+            
+              if player.grab==True:
+                  
+
+                  print('')
+                  if event.key == pygame.K_DOWN:
+                    playerpos.changeparent(carga1pos,'down',parent)
+                  if event.key == pygame.K_UP:
+                    playerpos.changeparent(carga1pos,'up',parent)
+                  if event.key == pygame.K_LEFT:
+                    playerpos.changeparent(carga1pos,'left',parent)
+                  if event.key == pygame.K_RIGHT:
+                    playerpos.changeparent(carga1pos,'right',parent)
+
             
             #Reloj
             if event.type == timer: 
@@ -161,7 +266,7 @@ class Gamestate():
                     timer_text = timer_font.render(time.strftime('%M:%S', time.gmtime(timer_sec)), True, (255, 255, 255))
                     #print(timer_sec)
                 else:
-                      pygame.time.set_timer(timer, 0)
+                      pygame.time.set_timer(timer, 60000)
             
         screen.blit(timer_text, [300, 300])
                 
@@ -173,18 +278,236 @@ class pos():
     def __init__(self,ubx,uby):
         self.posxn=ubx
         self.posyn=uby
-        self.posn=(self.posxn,self.posyn)
+        self.posn=[self.posxn,self.posyn]
         self.posp=m.trannp(self.posxn,self.posyn)
-  
+
     def changepos(self,dirc):
-        if dirc=='down':
-            self.posxn= self.posxn+1
+        if self.posxn!=7:
+            if dirc=='down':
+                self.posxn= self.posxn+1
+        if self.posxn!=0:       
+            if dirc=='up':
+                self.posxn= self.posxn-1
+        if self.posyn!=7:               
+            if dirc=='right':
+                self.posyn= self.posyn+1
+        if self.posyn!=0: 
+            if dirc=='left':
+                self.posyn= self.posyn-1                
+            self.posn=[self.posxn,self.posyn]
+
+    
+    def changeparent(self,obj,dirc,parent):
+    
+      print(parent,'parent')
+      print(dirc,'direccion')
+
+      #MOVIMIENTO HACIA ABAJO
+      if dirc=='down':
+        if self.posxn!=7:
+            #Carga a la izquierda del personaje
+            if parent=='izquierda':
+              self.posxn= self.posxn+1
+              obj.posxn= self.posxn
+              print('moviendo izquierda',obj.posxn)
+            #Carga a la derecha del personaje
+            if parent=='derecha':
+              self.posxn= self.posxn+1
+              obj.posxn= self.posxn
+              print('moviendo derecha',obj.posxn)
+            #Carga arriba del personaje
+            if parent=='arriba':
+              self.posxn= self.posxn+1
+              obj.posxn=self.posxn-1
+              print('moviendo arriba',obj.posxn)
+            #Carga abajo del personaje  
+            if parent=='abajo':
+              if self.posxn!=6:
+                self.posxn= self.posxn+1
+                obj.posxn=self.posxn+1
+
+              print('moviendo abajo',obj.posxn)
+
+
+
+      if dirc=='up':
+        if self.posxn!=0:
+            #Carga a la izquierda del personaje
+            if parent=='izquierda':
+              self.posxn= self.posxn-1
+              obj.posxn= self.posxn
+              print('moviendo izquierda',obj.posxn)
+            #Carga a la derecha del personaje
+            if parent=='derecha':
+              self.posxn= self.posxn-1
+              obj.posxn= self.posxn
+              print('moviendo derecha',obj.posxn)
+            #Carga arriba del personaje
+            if parent=='arriba':
+              if self.posxn!=1:
+                self.posxn= self.posxn-1
+                obj.posxn=self.posxn-1
+              print('moviendo arriba',obj.posxn)
+            #Carga abajo del personaje  
+            if parent=='abajo':
+              self.posxn= self.posxn-1
+              obj.posxn=self.posxn+1
+              print('moviendo abajo',obj.posxn)
+
+
+      
+      if dirc=='right':
+        if self.posyn!=7:
+          #Carga a la izquierda del personaje
+            if parent=='izquierda':
+              self.posyn= self.posyn+1
+              obj.posyn= self.posyn-1
+
+              print('moviendo izquierda',obj.posxn)
+            #Carga a la derecha del personaje
+            if parent=='derecha':
+              if self.posyn!=6:
+                self.posyn= self.posyn+1
+                obj.posyn= self.posyn+1
+              print('moviendo derecha',obj.posxn)
+            #Carga arriba del personaje
+            if parent=='arriba':
+              self.posyn= self.posyn+1
+              obj.posyn=self.posyn
+              print('moviendo arriba',obj.posxn)
+            #Carga abajo del personaje  
+            if parent=='abajo':
+              self.posyn= self.posyn+1
+              obj.posyn=self.posyn
+              print('moviendo abajo',obj.posxn)
+
+
+      if dirc=='left':
+        if self.posyn!=0:
+          #Carga a la izquierda del personaje
+            if parent=='izquierda':
+              if self.posyn!=1:
+                self.posyn= self.posyn-1 
+                obj.posyn= self.posyn-1
+                print('moviendo izquierda',obj.posxn)
+            #Carga a la derecha del personaje
+            if parent=='derecha':
+              self.posyn= self.posyn-1 
+              obj.posyn= self.posyn+1
+              print('moviendo derecha',obj.posxn)
+            #Carga arriba del personaje
+            if parent=='arriba':
+              self.posyn= self.posyn-1 
+              obj.posyn=self.posyn
+              print('moviendo arriba',obj.posxn)
+            #Carga abajo del personaje  
+            if parent=='abajo':
+              self.posyn= self.posyn-1 
+              obj.posyn=self.posyn
+              print('moviendo abajo',obj.posxn)
+         
+
+
+              
+    def parent(self,obj):
+        
+        dy=self.posxn-obj.posxn
+        dx=self.posyn-obj.posyn
+
+       
+          
+        posobj=[0,0]
+        if dx==1 and dy==0:
+          parent='izquierda'
+          print('1')
+          
+        elif dx==-1 and dy==0 :
+
+          parent='derecha'
+          print('2')
+
+        elif dy==1 and dx==0:
+          parent='arriba'
+          print('3')
+          
+        elif dy==-1 and dx==0:
+          parent='abajo'
+          print('4')
+
+        else:
+          parent='no'
+          
+        return parent,dx,dy
+          
+          
+          #posobj[1]=self.posn[1]-1
+          #print(posobj, 'Funciona condicion1==========')
+        return posobj
+
+
+
+def cercania(L):
+  q=[]
+  for i in L:
+    q.append(i)
+  
+  for i in q:
+    
+    k=i.posxn
+    j=i.posyn
+    
+    for o in q:
+      g= o.posxn
+      h = o.posyn
+      if abs(k-g)==1:
+
+        print('aaaaaaaaaaaaa',i.tipo, i.pos, o.tipo, o.pos)
+        #no son neutros
+        if i.tipo!='neutro' and o.tipo!='neutro':
+          
+          #TIENEN CARGA IGUAL
+          if i.tipo==o.tipo:
+            #print('repeler===>',i.tipo, i.pos, o.tipo, o.pos)
+
+            if i.pos>o.pos:
+              i.posxn=i.posxn+1
+              o.posxn=o.posxn-1
+            if i.posxn<o.posxn:
+              i.posxn=i.posxn-1
+              o.posxn=o.posxn+1
+            #print('repelido===>',i.tipo, i.pos, o.tipo, o.pos)
+            
+          #TIENEN DIFERENTE CARGA
+          if i.tipo !=o.tipo:
+            print('atraido===>',i.tipo, i.pos, o.tipo, o.pos)
+            if i.posxn>o.posxn:
+              i.posxn=i.posxn-1
+
+            if i.posxn<o.posxn:
+              i.posxn=i.posxn+1
+
+
+            
+        #print('cumple cercania====>',i.tipo, i.pos, o.tipo, o.pos)
+
+        q.remove(i)
+        q.remove(o)
+
+
+
+
+#def listapos()
+
+
 
 
 game_state = Gamestate()
 
-carga1pos=pos(3,5)
+carga1pos=pos(2,1)
 
+carga2pos=pos(5,5)
+
+playerpos=pos(0,0)
 carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
 
 tablero = Objeto('tablero',0,0)
@@ -205,29 +528,14 @@ UI = pygame.image.load('botones/margenes.png').convert_alpha()
 clock = pygame.time.Clock()
 
 done = False
-
-
-'''
-  for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            done = True
-        screen.blit(tablero2, [0, 0])
-
-
-        carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn)) 
-        screen.blit(tablero.image, tablero.posip)
-        screen.blit(carga1.image,carga1.posip)
-        if event.type == pygame.KEYDOWN:
-          if event.key == pygame.K_DOWN:
-            carga1pos.changepos('down')
-
-  '''
-
-timer_sec = 1800000000
+parent = None
+timer_sec = 60
+grab = False
 #print(dir(Gamestate))
+
 while not done:
  
     game_state.cambia_nivel()
-    clock.tick()
+    clock.tick(1)
 
 pygame.quit()
