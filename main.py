@@ -1,4 +1,6 @@
 import pygame
+from pygame.locals import *
+import sys
 import cv2
 import numpy
 import time
@@ -6,6 +8,21 @@ import os
 
 pygame.init()
 pygame.display.set_mode()
+size = (1280, 720)
+screen = pygame.display.set_mode(size)
+w= screen.get_width()
+h=screen.get_height()
+#Colores 
+black = (0, 0, 0)
+white = (255, 255, 255)
+red = (255, 0, 0)
+amarillo = (255, 255, 0)
+green = (0, 255, 0)
+FPS = 60
+x=0
+fondo = pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/Fondopaola.png").convert()
+pinilla= pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/2.png").convert()
+pinilla.set_colorkey(red)
 
 def mouseover(imagen,coordenadas):
     mouse=False
@@ -40,6 +57,15 @@ class Boton():
                 self.mouse=True
             if mouse2==False:
                 self.ima = pygame.image.load("botones/niveles_0.png").convert_alpha()
+                self.mouse=False
+                
+        if self.tipo=='pausa':
+            mouse3=mouseover(imagen,coordenadas)
+            if mouse3==True:
+                self.ima = pygame.image.load("botones/pausa_1.png").convert_alpha()
+                self.mouse=True
+            if mouse3==False:
+                self.ima = pygame.image.load("botones/pausa_0.png").convert_alpha()
                 self.mouse=False
 
 class Objeto():
@@ -145,11 +171,30 @@ class Gamestate():
             self.nivel_1()
         if self.state== "videoCoulomb":
             self.videoCoulomb()
-        
+        if self.state=='menu_pausa':
+            self.menu_pausa()
+            
+    def menu_pausa(self):
+        fondom()        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True 
+                screen.blit(fondo, [x_a,0])
+                screen.blit(pinilla, [384+400, 104])  
+                k.draw()
+       
+
+              
+        pygame.display.update()
+    
+        reloj.tick(FPS)
+      
+        pygame.display.flip()
+      
     def videoCoulomb(self):
         coulomb = "Coulomb"
         num_of_frames = len(os.listdir(coulomb))
-        for i in range (0, num_of_frames):
+        for i in range (0, 20):
             img1= pygame.image.load(f"Coulomb/myphotos{i}.png")
             screen.blit(img1, (0,0))
             pygame.display.update()
@@ -183,11 +228,27 @@ class Gamestate():
           
         pygame.display.flip()
 
+    
+    def fondom():
+        global x
+        x_a = x % fondo.get_rect().width
+        screen.blit(fondo, (x_a - fondo.get_rect().width ,0))
+        if x_a < 1280:
+            screen.blit(fondo,(x_a,0))
+            screen.blit(pinilla, [384+400, 104])
+            k.draw()
 
+        x-=1 
 
     def nivel_1(self):
         #videoCoulomb
-        
+        coorxy=[8,8]
+        boton3=Boton('pausa','botones/pausa_0.png',coorxy)
+        imagenboton3=boton3.ima
+        screen.blit(imagenboton3,coorxy)
+        if event.type==pygame.MOUSEBUTTONDOWN:
+            if boton3.mouse==True:
+                self.state='menu_pausa'
         #Cositas para el Reloj
         timer_font = pygame.font.SysFont('Consolas', 30)
         global timer_sec      
@@ -296,8 +357,22 @@ class Gamestate():
                       pygame.time.set_timer(timer, 60000)
             
         screen.blit(timer_text, [300, 300])
-                
+        
+         
+        #Cientifica
+        fondom()        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True 
+                screen.blit(fondo, [x_a,0])
+                screen.blit(pinilla, [384+400, 104])  
+                k.draw()
+       
 
+              
+        pygame.display.update()
+    
+        reloj.tick(FPS)
         pygame.display.flip()
 
 
@@ -521,7 +596,48 @@ def cercania(L):
         q.remove(o)
 
 
+class Text:
 
+    def __init__(self, text, pos, fontsize, color, fontname='C:/Users/FAMILIA/.spyder-py3/Letra/MP16OSF.ttf', ):
+        self.text = text
+        self.len = len(self.text)+1
+        self.pos = pos
+        self.fontname = fontname
+        self.fontsize = fontsize
+        self.fontcolor = Color(color)
+        self.set_font()
+        self.move = True
+        
+            
+    def set_font(self):
+        self.font = pygame.font.Font(self.fontname, self.fontsize)
+     
+    def tfin(self):
+        self.img = self.font.render(self.text, True, self.fontcolor)
+        self.rect = self.img.get_rect()
+        self.rect.center = self.pos
+        screen.blit(self.img, self.rect)
+        #pygame.display.update()
+        
+    def draw(self):
+        while self.move:
+            for n in range(0, self.len):
+                if n == self.len-1:
+                    self.move = False
+                self.img = self.font.render(self.text[0:n], True, self.fontcolor)
+                self.rect = self.img.get_rect()
+                self.rect.center = self.pos
+                R=Rect(self.rect.topleft, (self.rect.width, self.rect.height))
+                pygame.draw.rect(screen, (0,0,0), R)
+                screen.blit(self.img, self.rect)
+                pygame.display.update()
+                pygame.time.wait(400)
+        self.tfin()
+        
+        
+        
+        
+k = Text('¡Hola!, soy Paola Pinilla. Astrofísica Colombiana ', (w/2.0,h-650), 35, white ) 
 
 #def listapos()
 
@@ -540,8 +656,8 @@ carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
 
 tablero = Objeto('tablero',0,0)
 tablero2 = pygame.image.load("assets/tablero2.png").convert()
-size = (1280, 720)
-screen = pygame.display.set_mode(size)
+
+
 
 
 
