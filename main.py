@@ -3,6 +3,7 @@ import cv2
 import numpy
 import time
 from datetime import datetime
+import os
 
 pygame.init()
 pygame.display.set_mode()
@@ -174,7 +175,8 @@ class Gamestate():
     def nivel_1(self):
         #Cositas para el Reloj
         
-        timer_font = pygame.font.SysFont('Consolas', 40)
+        
+        timer_font = pygame.font.Font('fuentes\joystix monospace.ttf', 35)
         global timer_limit 
         global grab
         global parent
@@ -183,9 +185,9 @@ class Gamestate():
         
         tactual=inicio-(time.time())
         timer_sec=int(timer_limit+tactual)
-        print(timer_sec,'=========',tactual)
+        #print(timer_sec,'=========',tactual)
         pygame.display.update()
-        timer_text = timer_font.render(datetime.utcfromtimestamp(timer_sec).strftime('%M:%S'), True, (255, 255, 255))
+        timer_text = timer_font.render(datetime.utcfromtimestamp(timer_sec).strftime('%M:%S'), False, (255, 255, 255))
  
         for event in pygame.event.get():
             print('pygame event')
@@ -212,7 +214,7 @@ class Gamestate():
             
             #print(carga1pos.posn,'====>',carga1pos.posxn)
             screen.blit(tablero.image, tablero.posip)
-            screen.blit(UI,[0,0])
+
             screen.blit(player.image,player.posip)
             screen.blit(carga1.image,carga1.posip)
             screen.blit(carga2.image,carga2.posip)
@@ -271,7 +273,7 @@ class Gamestate():
             #Reloj
         timer_text = timer_font.render(datetime.utcfromtimestamp(timer_sec).strftime('%M:%S'), True, (255, 255, 255))
         screen.blit(UI,[0,0])
-        screen.blit(timer_text, [1100, 25])
+        screen.blit(timer_text, [1090, 19])
         pygame.display.flip()
 
 
