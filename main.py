@@ -131,9 +131,7 @@ class Player(Objeto):
     else:
         self.image=pygame.image.load("assets/personaje.png").convert_alpha()
 
-        
-
-
+    
 
 class Gamestate():
     def __init__(self):
@@ -170,12 +168,8 @@ class Gamestate():
           
         pygame.display.flip()
 
-
-
     def nivel_1(self):
-        #Cositas para el Reloj
-        
-        
+        #Cositas para el Reloj           
         timer_font = pygame.font.Font('fuentes\joystix monospace.ttf', 35)
         global timer_limit 
         global grab
@@ -455,8 +449,7 @@ def cercania(L):
   for i in L:
     q.append(i)
   
-  for i in q:
-    
+  for i in q: 
     k=i.posxn
     j=i.posyn
     
@@ -472,7 +465,8 @@ def cercania(L):
           #TIENEN CARGA IGUAL
           if i.tipo==o.tipo:
             #print('repeler===>',i.tipo, i.pos, o.tipo, o.pos)
-
+            
+    
             if i.pos>o.pos:
               i.posxn=i.posxn+1
               o.posxn=o.posxn-1
@@ -480,28 +474,10 @@ def cercania(L):
               i.posxn=i.posxn-1
               o.posxn=o.posxn+1
             #print('repelido===>',i.tipo, i.pos, o.tipo, o.pos)
-            
-          #TIENEN DIFERENTE CARGA
-          if i.tipo !=o.tipo:
-            print('atraido===>',i.tipo, i.pos, o.tipo, o.pos)
-            if i.posxn>o.posxn:
-              i.posxn=i.posxn-1
 
-            if i.posxn<o.posxn:
-              i.posxn=i.posxn+1
-
-
-            
-        #print('cumple cercania====>',i.tipo, i.pos, o.tipo, o.pos)
 
         q.remove(i)
         q.remove(o)
-
-
-
-
-#def listapos()
-
 
 
 sentido='0'
@@ -542,6 +518,5 @@ while not done:
     
     game_state.cambia_nivel()
     clock.tick(60)
-
 
 pygame.quit()
