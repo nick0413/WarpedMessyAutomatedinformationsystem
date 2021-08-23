@@ -40,6 +40,15 @@ class Boton():
             if mouse2==False:
                 self.ima = pygame.image.load("botones/niveles_0.png").convert_alpha()
                 self.mouse=False
+                
+        if self.tipo=='pausa':
+            mouse3=mouseover(imagen,coordenadas)
+            if mouse3==True:
+                self.ima = pygame.image.load("botones/pausa_1.png").convert_alpha()
+                self.mouse=True
+            if mouse3==False:
+                self.ima = pygame.image.load("botones/pausa_0.png").convert_alpha()
+                self.mouse=False
 
 class Objeto():
     def __init__(self,nombre,ubx,uby):
@@ -131,7 +140,7 @@ class Player(Objeto):
 
         
 
-
+fondo_niveles= pygame.image.load("assets/fondo_niveles.png").convert()
 
 class Gamestate():
     def __init__(self):
@@ -142,7 +151,12 @@ class Gamestate():
             self.intro()
         if self.state=='nivel_1':
             self.nivel_1()
-
+        if self.state=='menu_pausa':
+           self.menu_pausa()
+    def menu_pausa(self):
+        screen.blit(fondo_niveles,[0,0])
+      
+        pygame.display.flip()
     def intro(self):
         coorxy=[640-152,420-32]
         coorxy2=[640-152,420+50]
@@ -167,6 +181,10 @@ class Gamestate():
 
 
     def nivel_1(self):
+        coorxy=[8,8]
+        boton3=Boton('pausa','botones/pausa_0.png',coorxy)
+        imagenboton3=boton3.ima
+        
         #Cositas para el Reloj
         timer_font = pygame.font.SysFont('Consolas', 30)
         global timer_sec      
