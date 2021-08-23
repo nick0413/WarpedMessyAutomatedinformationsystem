@@ -3,6 +3,8 @@ import cv2
 import numpy
 import time
 
+#Mi primera prueba wiii
+
 pygame.init()
 pygame.display.set_mode()
 
