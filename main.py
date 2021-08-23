@@ -2,6 +2,7 @@ import pygame
 import cv2
 import numpy
 import time
+import os
 
 pygame.init()
 pygame.display.set_mode()
@@ -135,13 +136,31 @@ class Player(Objeto):
 
 class Gamestate():
     def __init__(self):
-        self.state='intro'
+        self.state='videoCoulomb'
 
     def cambia_nivel(self):
         if self.state=='intro':
             self.intro()
         if self.state=='nivel_1':
             self.nivel_1()
+        if self.state== "videoCoulomb":
+            self.videoCoulomb()
+        
+    def videoCoulomb(self):
+        coulomb = "Coulomb"
+        num_of_frames = len(os.listdir(coulomb))
+        for i in range (0, num_of_frames):
+            img1= pygame.image.load(f"Coulomb/myphotos{i}.png")
+            screen.blit(img1, (0,0))
+            pygame.display.update()
+            time.sleep(0.02)
+           
+            self.state='nivel_1'
+            print(self.state)     
+            
+
+        pygame.display.flip()
+        
 
     def intro(self):
         coorxy=[640-152,420-32]
@@ -167,6 +186,8 @@ class Gamestate():
 
 
     def nivel_1(self):
+        #videoCoulomb
+        
         #Cositas para el Reloj
         timer_font = pygame.font.SysFont('Consolas', 30)
         global timer_sec      
