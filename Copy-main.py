@@ -184,10 +184,10 @@ class Gamestate():
         #print(timer_sec,'=========',tactual)
         pygame.display.update()
         timer_text = timer_font.render(datetime.utcfromtimestamp(timer_sec).strftime('%M:%S'), True, (255, 255, 255))
-        L=[carga1neg_pos, carga1pos_pos,carga2pos_pos]  #,carga3pos,carganeg1,carganeg2,carganet1,carganet2]
+        L=[carga1neg_pos, carga1pos_pos,carga2pos_pos,carga1net_pos]       #,carga3pos,carganeg1,carganeg2,carganet1,carganet2]
         for event in pygame.event.get():
             #print('pygame event')
-            equilibrio(L)
+            
             if event.type == pygame.QUIT:
                 done = True
             screen.blit(tablero2, [0, 0])
@@ -196,7 +196,8 @@ class Gamestate():
             player=Player('player',playerpos.posxn,playerpos.posyn,sentido)
             carga1=Objeto('positivo',(carga1pos_pos.posxn),(carga1pos_pos.posyn))
             carga2=Objeto('positivo',(carga2pos_pos.posxn),(carga2pos_pos.posyn))
-            carga3=Objeto('negativo', (carga1neg_pos.posxn), (carga1neg_pos.posyn))
+            carga3=Objeto('negativo',(carga1neg_pos.posxn),(carga1neg_pos.posyn))
+            carga4=Objeto('neutro',(carga1net_pos.posxn),(carga1net_pos.posyn))
             
             #print(carga1pos.posn,'====>',carga1pos.posxn)
             screen.blit(tablero.image, tablero.posip)
@@ -204,8 +205,10 @@ class Gamestate():
             screen.blit(player.image,player.posip)
             screen.blit(carga1.image,carga1.posip)
             screen.blit(carga2.image,carga2.posip)
-            screen.blit(carga3.image, carga3.posip)
+            screen.blit(carga3.image,carga3.posip)
+            screen.blit(carga4.image, carga4.posip)
             
+
             
 
             if event.type == pygame.KEYDOWN:
@@ -262,7 +265,8 @@ class Gamestate():
                     playerpos.changeparent(proximo,'left',parent)
                   if event.key == pygame.K_RIGHT:
                     playerpos.changeparent(proximo,'right',parent)
-
+            atomo(maquinapos,carga1pos_pos,carga1neg_pos,carga1net_pos)
+            equilibrio(L)
             
             #Reloj
         timer_text = timer_font.render(datetime.utcfromtimestamp(timer_sec).strftime('%M:%S'), True, (255, 255, 255))
@@ -467,7 +471,32 @@ def proximidad(L,posxn,posyn):
         
             
 
+def atomo(posm,posp,pose,posn):
 
+    neutron=False
+    electron=False
+    proton=False
+    #print(posm.posxn,'-',pose.posxn,'=0       ',posm.posyn,'-',pose.posyn,'===1')
+    if posm.posxn-posn.posxn==1 and posm.posyn-posn.posyn==0:
+        #print('si es la distancia')
+        if posn.tipo=='neutro':
+            neutron=True
+            print('neutro======>')
+    if posm.posyn-posp.posyn==1 and posm.posxn-posp.posxn==0:
+        #print('si es la distancia',posp.tipo)
+        if posp.tipo=='positivo':
+            proton=True
+            print('proton======>')
+    if posm.posyn-pose.posyn==-1 and posm.posxn-pose.posxn==0:
+        #print('si es la distancia',pose.tipo)
+        if pose.tipo=='negativo':
+            electron=True
+            #print('electro======>')
+    print(neutron,electron,proton)       
+    if neutron==True and proton==True and electron==True:
+        print('=============================================================================win')
+        
+    
 #INTERACCIÓN OBJETO A OBJETO
 def cercania(L):
   q=[]
@@ -476,14 +505,13 @@ def cercania(L):
   for i in q:    
     k=i.posxn
     j=i.posyn 
-    print('nuevo i', 'k=',k,'j=', j)
+    #print('nuevo i', 'k=',k,'j=', j)
     for o in q:
       g= o.posxn
       h = o.posyn
-      print('nuevo o', 'k=',k,'j=', j)
+      #print('nuevo o', 'k=',k,'j=', j)
 
 #REPELER 
-
       #REPELER VERTICAL
       if abs(k-g)==1:   #uno esta encima del otro    
         if abs(j-h)==0:
@@ -505,7 +533,7 @@ def cercania(L):
                   if o.grabbed==False:
                       o.posxn=o.posxn+1
 
-                print('repeler===>vertical',i.tipo, (i.posxn,i.posyn), o.tipo, (o.posxn,o.posyn))
+                #print('repeler===>vertical',i.tipo, (i.posxn,i.posyn), o.tipo, (o.posxn,o.posyn))
 
             
                 q.remove(i)
@@ -534,7 +562,7 @@ def cercania(L):
                   if o.grabbed==False:
                       o.posyn=o.posyn+1
 
-                print('repeler===>lados',i.tipo, (i.posxn,i.posyn), o.tipo, (o.posxn,o.posyn))
+                #print('repeler===>lados',i.tipo, (i.posxn,i.posyn), o.tipo, (o.posxn,o.posyn))
 
             
                 q.remove(i)
@@ -563,7 +591,7 @@ def cercania(L):
                         o.posxn=o.posxn-1
                       
                       
-                  print('atraer===>VERTICAL',i.tipo, (i.posxn,i.posyn), o.tipo, (o.posxn,o.posyn))
+                  #print('atraer===>VERTICAL',i.tipo, (i.posxn,i.posyn), o.tipo, (o.posxn,o.posyn))
                   
                   q.remove(i)
                   q.remove(o)
@@ -591,8 +619,8 @@ def cercania(L):
                   if o.grabbed==False:    
                       o.posyn=o.posyn-1
 
-                print('atraer===>LADOS',i.tipo, (i.posxn,i.posyn), o.tipo, (o.posxn,o.posyn))
-                print(i.grabbed, o.grabbed)
+                #print('atraer===>LADOS',i.tipo, (i.posxn,i.posyn), o.tipo, (o.posxn,o.posyn))
+                #print(i.grabbed, o.grabbed)
             
                 q.remove(i)
                 q.remove(o)                
@@ -604,11 +632,11 @@ def equilibrio(l):
     q=cercania(l)
     if q!=l:
         equi=False
-        print('equilibrio ============>', equi)
+        #print('equilibrio ============>', equi)
     if q==l:
         equi=True
-        print('q y l son iguales')
-        print('equilibrio ============>', equi)   
+        #print('q y l son iguales')
+        #print('equilibrio ============>', equi)   
 
 
 
@@ -617,7 +645,7 @@ def equilibrio(l):
 sentido='0'
 
 game_state = Gamestate()
-
+maquinapos=pos('maquina',[7,1])
 carga1pos_pos=pos('positivo', [1,3])
 carga2pos_pos=pos('positivo', [5,4])
 carga3pos_pos=pos('positivo', [4,2])
