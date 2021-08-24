@@ -7,11 +7,11 @@ class pos():
 
 
 
-
+playerpos = pos('neutro', [1,1])
 cargapos1 = pos('positivo', [2,1])
 cargapos2 = pos('positivo', [2,2])
 
-cargapos3 = pos('positivo', [4,2])
+cargapos3 = pos('positivo', [4,3])
 
 carganeg1 = pos('negativo', [3,6])
 carganeg2 = pos('negativo', [8,3])
@@ -20,9 +20,24 @@ carganet1=pos('neutro', [3,5])
 carganet2 = pos('neutro', [1,5])
 
 
-L=[cargapos1,cargapos2,cargapos3,carganeg1,carganeg2,carganet1,carganet2]
+L=[cargapos3,carganeg1,cargapos1,carganeg2,carganet1, cargapos2] #,carganet2]
 
-
+def proximidad(L,posxn,posyn):
+    encontrado=False
+    for i in L:
+        k=i.posxn
+        j=i.posyn
+        print('posicion obj===',k,j,'posicion player===', posxn, posyn)
+        if abs(k-posxn)==1:
+            print('k=',k, 'posxn=', posxn)
+            return i
+        
+        if abs(j-posyn)==1:
+            print('j=',j, 'posyn=', posyn)
+            return i
+        
+    else:
+        return encontrado
 
 def cercania(L):
   q=[]
@@ -101,8 +116,11 @@ def equilibrio(l):
 
 
 
-print('==========================',L[2].posxn,L[3].posxn)
-equilibrio(L)
+#print('==========================',L[2].posxn,L[3].posxn)
+#equilibrio(L)
 
-print('==========================',L[2].posxn,L[3].posxn)
+proximo=proximidad(L, playerpos.posxn, playerpos.posyn )
+print(proximo.posxn, proximo.posyn)
+
+#print('==========================',L[2].posxn,L[3].posxn)
 

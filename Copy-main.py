@@ -184,9 +184,9 @@ class Gamestate():
         #print(timer_sec,'=========',tactual)
         pygame.display.update()
         timer_text = timer_font.render(datetime.utcfromtimestamp(timer_sec).strftime('%M:%S'), True, (255, 255, 255))
-        L=[carga1pos,carga2pos]  #,carga3pos,carganeg1,carganeg2,carganet1,carganet2]
+        L=[carga1neg_pos, carga1pos_pos,carga2pos_pos]  #,carga3pos,carganeg1,carganeg2,carganet1,carganet2]
         for event in pygame.event.get():
-            print('pygame event')
+            #print('pygame event')
             equilibrio(L)
             if event.type == pygame.QUIT:
                 done = True
@@ -194,8 +194,9 @@ class Gamestate():
 
             
             player=Player('player',playerpos.posxn,playerpos.posyn,sentido)
-            carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
-            carga2=Objeto('positivo',(carga2pos.posxn),(carga2pos.posxn))
+            carga1=Objeto('positivo',(carga1pos_pos.posxn),(carga1pos_pos.posyn))
+            carga2=Objeto('positivo',(carga2pos_pos.posxn),(carga2pos_pos.posyn))
+            carga3=Objeto('negativo', (carga1neg_pos.posxn), (carga1neg_pos.posyn))
             
             #print(carga1pos.posn,'====>',carga1pos.posxn)
             screen.blit(tablero.image, tablero.posip)
@@ -203,6 +204,7 @@ class Gamestate():
             screen.blit(player.image,player.posip)
             screen.blit(carga1.image,carga1.posip)
             screen.blit(carga2.image,carga2.posip)
+            screen.blit(carga3.image, carga3.posip)
             
             
 
@@ -228,7 +230,7 @@ class Gamestate():
 
               if event.key == pygame.K_SPACE:        
                   grab=True
-                  proximo=proximidad(L, playerpos.posxn, playerpos.posyn)
+                  proximo=proximidad(L, playerpos.posxn, playerpos.posyn) #busca la partícula más cercana al jugador
                   print('aquí debería existir encontrado =============>')
                   if proximo==False:
                       grab=False
@@ -241,6 +243,7 @@ class Gamestate():
                 if grab==True:
                   grab=False
                   player.grab=False
+                  proximo.grabbed = False
                   #print('grab false')
 
             
@@ -277,6 +280,7 @@ class pos():
         self.posyn=pos[1]
         self.posn=[self.posxn,self.posyn]
         self.posp=m.trannp(self.posxn,self.posyn)
+        self.grabbed = False
 
     def changepos(self,dirc):
         if self.posxn!=7:
@@ -360,23 +364,23 @@ class pos():
               self.posyn= self.posyn+1
               obj.posyn= self.posyn-1
 
-              print('moviendo izquierda',obj.posxn)
+              print('moviendo izquierda',obj.posyn)
             #Carga a la derecha del personaje
             if parent=='derecha':
               if self.posyn!=6:
                 self.posyn= self.posyn+1
                 obj.posyn= self.posyn+1
-              print('moviendo derecha',obj.posxn)
+              print('moviendo derecha',obj.posyn)
             #Carga arriba del personaje
             if parent=='arriba':
               self.posyn= self.posyn+1
               obj.posyn=self.posyn
-              print('moviendo arriba',obj.posxn)
+              print('moviendo arriba',obj.posyn)
             #Carga abajo del personaje  
             if parent=='abajo':
               self.posyn= self.posyn+1
               obj.posyn=self.posyn
-              print('moviendo abajo',obj.posxn)
+              print('moviendo abajo',obj.posyn)
 
 
       if dirc=='left':
@@ -386,22 +390,22 @@ class pos():
               if self.posyn!=1:
                 self.posyn= self.posyn-1 
                 obj.posyn= self.posyn-1
-                print('moviendo izquierda',obj.posxn)
+                print('moviendo izquierda',obj.posyn)
             #Carga a la derecha del personaje
             if parent=='derecha':
               self.posyn= self.posyn-1 
               obj.posyn= self.posyn+1
-              print('moviendo derecha',obj.posxn)
+              print('moviendo derecha',obj.posyn)
             #Carga arriba del personaje
             if parent=='arriba':
               self.posyn= self.posyn-1 
               obj.posyn=self.posyn
-              print('moviendo arriba',obj.posxn)
+              print('moviendo arriba',obj.posyn)
             #Carga abajo del personaje  
             if parent=='abajo':
               self.posyn= self.posyn-1 
               obj.posyn=self.posyn
-              print('moviendo abajo',obj.posxn)
+              print('moviendo abajo',obj.posyn)
          
 
 
@@ -416,19 +420,22 @@ class pos():
         posobj=[0,0]
         if dx==1 and dy==0:
           parent='izquierda'
+          obj.grabbed = True
           print('1')
           
         elif dx==-1 and dy==0 :
-
           parent='derecha'
+          obj.grabbed = True
           print('2')
 
         elif dy==1 and dx==0:
           parent='arriba'
+          obj.grabbed = True
           print('3')
           
         elif dy==-1 and dx==0:
           parent='abajo'
+          obj.grabbed = True
           print('4')
 
         else:
@@ -446,14 +453,17 @@ def proximidad(L,posxn,posyn):
     for i in L:
         k=i.posxn
         j=i.posyn
-        if abs(k-posxn)==1:
+        print('posicion obj===',k,j,'posicion player===', posxn, posyn)
+        if abs(k-posxn)==1 and abs(j-posyn)==0:
+            print('k=',k, 'posxn=', posxn)
             return i
         
-        if abs(j-posyn)==1:
+        if abs(j-posyn)==1 and abs(k-posxn)==0:
+            print('j=',j, 'posyn=', posyn)
             return i
         
-        else:
-            return encontrado
+    else:
+        return encontrado
         
             
 
@@ -461,78 +471,144 @@ def proximidad(L,posxn,posyn):
 #INTERACCIÓN OBJETO A OBJETO
 def cercania(L):
   q=[]
-
-  
-
   for i in L:
     q.append(i)
-
-
-  for i in q:
-    
+  for i in q:    
     k=i.posxn
-    j=i.posyn
-
-    
+    j=i.posyn 
+    print('nuevo i', 'k=',k,'j=', j)
     for o in q:
-
       g= o.posxn
       h = o.posyn
-      
+      print('nuevo o', 'k=',k,'j=', j)
+
+#REPELER 
+
+      #REPELER VERTICAL
       if abs(k-g)==1:   #uno esta encima del otro    
         if abs(j-h)==0:
-        #print('aaaaaaaaaaaaa',i.tipo, i.pos, o.tipo, o.pos)
-        #no son neutros
             if i.tipo!='neutro' and o.tipo!='neutro':
+            
               if i.tipo==o.tipo:
 
-                if i.pos>o.pos:
+                if i.posxn>o.posxn:
                   print('alejo')
-                  i.posxn=i.posxn+1
-                  o.posxn=o.posxn-1
+                  if i.grabbed==False:                      
+                      i.posxn=i.posxn+1
+                  if o.grabbed==False:    
+                      o.posxn=o.posxn-1
                   
                 if i.posxn<o.posxn:
                   print('alejo2')
-                  i.posxn=i.posxn-1
-                  o.posxn=o.posxn+1
+                  if i.grabbed==False:
+                      i.posxn=i.posxn-1
+                  if o.grabbed==False:
+                      o.posxn=o.posxn+1
 
                 print('repeler===>vertical',i.tipo, (i.posxn,i.posyn), o.tipo, (o.posxn,o.posyn))
 
             
                 q.remove(i)
                 q.remove(o)
-      
-      if abs(j-h)==1:   #están al lado    
+                
+                
+      #REPELER HORIZONTAL
+      if abs(j-h)==1:   #uno esta al lado del otro    
         if abs(k-g)==0:
-        #print('aaaaaaaaaaaaa',i.tipo, i.pos, o.tipo, o.pos)
-        #no son neutros
+            
             if i.tipo!='neutro' and o.tipo!='neutro':
+                
               if i.tipo==o.tipo:
-                if i.pos>o.pos:
+            
+                if i.posyn>o.posyn:
                   print('alejo')
-                  i.posyn=i.posyn+1
-                  o.posyn=o.posyn-1
+                  if i.grabbed==False:
+                      i.posyn=i.posyn+1
+                  if o.grabbed==False:
+                      o.posyn=o.posyn-1
                   
                 if i.posyn<o.posyn:
                   print('alejo2')
-                  i.posyn=i.posyn-1
-                  o.posyn=o.posyn+1
+                  if i.grabbed==False:
+                      i.posyn=i.posyn-1
+                  if o.grabbed==False:
+                      o.posyn=o.posyn+1
 
                 print('repeler===>lados',i.tipo, (i.posxn,i.posyn), o.tipo, (o.posxn,o.posyn))
 
             
                 q.remove(i)
                 q.remove(o)
+#ACABA REPELER
                 
       
+ #ATRAER
+ 
+     #ATRAER VERTICAL
+      if abs(k-g)==2 and abs(j-h)==0:   #uno esta encima del otro
+          if i.tipo!='neutro' and o.tipo!='neutro':
+              if i.tipo!=o.tipo:                  
+                  if i.posxn>o.posxn:
+                      print('atrae')
+                      if i.grabbed==False:
+                          i.posxn=i.posxn-1
+                      if o.grabbed==False:
+                          o.posxn=o.posxn+1
+                  
+                  if i.posxn<o.posxn:
+                      print('atare2')
+                      if i.grabbed==False:
+                          i.posxn=i.posxn+1
+                      if o.grabbed==False:
+                        o.posxn=o.posxn-1
+                      
+                      
+                  print('atraer===>VERTICAL',i.tipo, (i.posxn,i.posyn), o.tipo, (o.posxn,o.posyn))
+                  
+                  q.remove(i)
+                  q.remove(o)
+                  
+                  
+                  
+      #ATRAER HORIZONTAL  
+      if abs(j-h)==2 and abs(k-g)==0:
+            
+            if i.tipo!='neutro' and o.tipo!='neutro':
+                
+              if i.tipo!=o.tipo:
+            
+                if i.posyn>o.posyn:
+                  print('atrae')
+                  if i.grabbed==False:
+                      i.posyn=i.posyn-1
+                  if o.grabbed==False:
+                      o.posyn=o.posyn+1
+                  
+                if i.posyn<o.posyn:
+                  print('atrae2')
+                  if i.grabbed==False:
+                      i.posyn=i.posyn+1
+                  if o.grabbed==False:    
+                      o.posyn=o.posyn-1
+
+                print('atraer===>LADOS',i.tipo, (i.posxn,i.posyn), o.tipo, (o.posxn,o.posyn))
+                print(i.grabbed, o.grabbed)
+            
+                q.remove(i)
+                q.remove(o)                
+      
+        
   return q
 
 def equilibrio(l):
-    equi=False
-    while not equi:
-        q=cercania(l)
-        if q==l:
-            equi=True
+    q=cercania(l)
+    if q!=l:
+        equi=False
+        print('equilibrio ============>', equi)
+    if q==l:
+        equi=True
+        print('q y l son iguales')
+        print('equilibrio ============>', equi)   
 
 
 
@@ -542,20 +618,20 @@ sentido='0'
 
 game_state = Gamestate()
 
-carga1pos=pos('positivo', [1,3])
-carga2pos=pos('positivo', [5,4])
-carga3pos=pos('positivo', [4,2])
+carga1pos_pos=pos('positivo', [1,3])
+carga2pos_pos=pos('positivo', [5,4])
+carga3pos_pos=pos('positivo', [4,2])
 
-carganeg1 = pos('negativo', [3,6])
-carganeg2 = pos('negativo', [7,3])
+carga1neg_pos = pos('negativo', [3,6])
+carga2neg_pos = pos('negativo', [7,3])
 
-carganet1=pos('neutro', [3,5])
-carganet2 = pos('neutro', [1,5])
+carga1net_pos=pos('neutro', [3,5])
+carga2net_pos= pos('neutro', [1,5])
 
 
 
 playerpos=pos('personaje',[0,0])
-carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
+
 
 tablero = Objeto('tablero',0,0)
 tablero2 = pygame.image.load("assets/tablero2.png").convert()
