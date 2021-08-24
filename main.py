@@ -6,6 +6,20 @@ import time
 pygame.init()
 pygame.display.set_mode()
 
+size = (1280, 720)
+screen = pygame.display.set_mode(size)
+fondo2 = pygame.image.load("assets/fondo2.png").convert()
+
+pygame.display.set_caption("ELECTROMAG")
+icono = pygame.image.load("assets/neutron.png")
+pygame.display.set_icon(icono)
+
+musica1 = pygame.mixer.music.load("musica1.ogg")
+musica1 = pygame.mixer.music.play(-1)
+
+sentido='0'
+
+
 def mouseover(imagen,coordenadas):
     mouse=False
     y,x,_ = cv2.imread(imagen).shape
@@ -48,6 +62,42 @@ class Boton():
                 self.mouse=True
             if mouse3==False:
                 self.ima = pygame.image.load("botones/pausa_0.png").convert_alpha()
+                self.mouse=False
+                
+        if self.tipo=='continuar':
+            mouse4=mouseover(imagen,coordenadas)
+            if mouse4==True:
+                self.ima = pygame.image.load("botones/continuar_1.png").convert_alpha()
+                self.mouse=True
+            if mouse4==False:
+                self.ima = pygame.image.load("botones/continuar_0.png").convert_alpha()
+                self.mouse=False
+                
+        if self.tipo=='salir':
+            mouse5=mouseover(imagen,coordenadas)
+            if mouse5==True:
+                self.ima = pygame.image.load("botones/salir_1.png").convert_alpha()
+                self.mouse=True
+            if mouse5==False:
+                self.ima = pygame.image.load("botones/salir_0.png").convert_alpha()
+                self.mouse=False
+                
+        if self.tipo=='n1':
+            mouse6=mouseover("botones/1_1.png",coordenadas)
+            if mouse6==True:
+                self.ima = pygame.image.load("botones/1_1.png").convert_alpha()
+                self.mouse=True
+            if mouse6==False:
+                self.ima = pygame.image.load("botones/1_0.png").convert_alpha()
+                self.mouse=False
+                
+        if self.tipo=='n2':
+            mouse7=mouseover("botones/2_1.png",coordenadas)
+            if mouse7==True:
+                self.ima = pygame.image.load("botones/2_1.png").convert_alpha()
+                self.mouse=True
+            if mouse7==False:
+                self.ima = pygame.image.load("botones/2_0.png").convert_alpha()
                 self.mouse=False
 
 class Objeto():
@@ -119,10 +169,10 @@ m=Grid(64,(500,100))
 class Player(Objeto):
   def __init__(self,nombre,ubx,uby, sentido='0'):
     super().__init__(nombre,ubx,uby)
-    
-    
     self.grab=None
-
+    
+    self.image=pygame.image.load("assets/personaje.png").convert_alpha()
+    
     if sentido=='down':
         self.image=pygame.image.load("assets/perdown.png").convert_alpha()
         print('cambio abajo')
@@ -135,28 +185,34 @@ class Player(Objeto):
     if sentido=='right':
         self.image=pygame.image.load("assets/perright.png").convert_alpha()
         print('cambio derecha')
-    else:
-        self.image=pygame.image.load("assets/personaje.png").convert_alpha()
-
         
 
+        
+fondo1 = pygame.image.load("assets/fondo1.png").convert()
 fondo_niveles= pygame.image.load("assets/fondo_niveles.png").convert()
-
+menu_pausa = pygame.image.load("assets/menu_pausa_.png").convert()
+menu_pausa.set_colorkey([0,0,0])
 class Gamestate():
     def __init__(self):
         self.state='intro'
 
     def cambia_nivel(self):
         if self.state=='intro':
-            self.intro()
-        if self.state=='nivel_1':
-            self.nivel_1()
+           self.intro()
         if self.state=='menu_pausa':
            self.menu_pausa()
-    def menu_pausa(self):
-        screen.blit(fondo_niveles,[0,0])
-      
-        pygame.display.flip()
+        if self.state=='continuar':
+           self.continuar()
+        if self.state=='salir':
+           self.salir()
+        if self.state=='niveles':
+           self.niveles()
+        if self.state=='nivel_1':
+           self.nivel_1()
+        if self.state=='nivel_2':
+           self.nivel_2()
+        
+        
     def intro(self):
         coorxy=[640-152,420-32]
         coorxy2=[640-152,420+50]
@@ -164,45 +220,91 @@ class Gamestate():
         imagenboton1=boton1.ima
         boton2=Boton('nivel','botones/niveles_0.png',coorxy2)
         imagenboton2=boton2.ima
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True
-            screen.blit(portada, [0, 0])
-            coorxy=[640-152,420-32]
-            screen.blit(imagenboton1,coorxy)
-            screen.blit(imagenboton2,coorxy2)
-            #print('intro')
-            if event.type==pygame.MOUSEBUTTONDOWN:
-                if boton1.mouse==True:
-                    self.state='nivel_1'
+        screen.blit(portada, [0, 0])
+        screen.blit(imagenboton1,coorxy)
+        screen.blit(imagenboton2,coorxy2)
+        
+        if event.type==pygame.MOUSEBUTTONDOWN:
+            if boton1.mouse==True:
+                self.state='nivel_1'
+           
+        if event.type==pygame.MOUSEBUTTONDOWN:
+            if boton2.mouse==True:
+                self.state='niveles'
           
         pygame.display.flip()
-
-
-
+    def niveles(self):
+        coorxy=[492,232]
+        coorxy2=[492,392]
+        boton1=Boton('n1','botones/1_0.png',coorxy)
+        imagenboton1=boton1.ima
+        boton2=Boton('n2','botones/2_0.png',coorxy2)
+        imagenboton2=boton2.ima
+        screen.blit(fondo_niveles,[0,0])
+        screen.blit(imagenboton1,coorxy)
+        screen.blit(imagenboton2,coorxy2)
+        if event.type==pygame.MOUSEBUTTONDOWN:
+            if boton1.mouse==True:
+                self.state='nivel_1'
+        if event.type==pygame.MOUSEBUTTONDOWN:
+            if boton2.mouse==True:
+                self.state='nivel_2'
+        pygame.display.flip()
+    def salir(self):
+        self.state='intro'
+    def conotinuar(self):
+        self.state='intro'
+    def menu_pausa(self):
+        coorxy=[482,232]
+        coorxy2=[482,328]
+        coorxy3=[482,424]
+        boton1=Boton('continuar','botones/continuar_0.png',coorxy)
+        imagenboton1=boton1.ima
+        boton2=Boton('nivel','botones/niveles_0.png',coorxy2)
+        imagenboton2=boton2.ima
+        boton3=Boton('salir','botones/niveles_0.png',coorxy3)
+        imagenboton3=boton3.ima
+        screen.blit(menu_pausa,[0,0])
+        screen.blit(imagenboton1,coorxy)
+        screen.blit(imagenboton2,coorxy2)
+        screen.blit(imagenboton3,coorxy3)
+        if event.type==pygame.MOUSEBUTTONDOWN:
+            if boton1.mouse==True:
+                self.state='nivel_1'
+        if event.type==pygame.MOUSEBUTTONDOWN:
+            if boton2.mouse==True:
+                self.state='niveles'
+        if event.type==pygame.MOUSEBUTTONDOWN:
+            if boton3.mouse==True:
+                self.state='salir'
+        
+        pygame.display.flip()
     def nivel_1(self):
+        #print(sentido)
+        global sentido
+        global grab
+        global parent
+        player=Player('player',playerpos.posxn,playerpos.posyn,sentido)
+        carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
+        carga2=Objeto('positivo',(carga2pos.posxn),(carga2pos.posxn))
+        screen.blit (fondo2, [0, 0])
+        screen.blit(tablero.image, tablero.posip)
+        screen.blit(UI,[0,0])
+        screen.blit(player.image,player.posip)
+        screen.blit(carga1.image,carga1.posip)
+        screen.blit(carga2.image,carga2.posip)
         coorxy=[8,8]
         boton3=Boton('pausa','botones/pausa_0.png',coorxy)
         imagenboton3=boton3.ima
+        screen.blit(imagenboton3,coorxy)
+        if event.type==pygame.MOUSEBUTTONDOWN:
+          if boton3.mouse==True:
+              self.state="menu_pausa"
         
-        #Cositas para el Reloj
-        timer_font = pygame.font.SysFont('Consolas', 30)
-        global timer_sec      
-        timer_text = timer_font.render(time.strftime('%M:%S', time.gmtime(timer_sec)), True, (255, 255, 255))
-        timer = pygame.USEREVENT + 1        
-        pygame.time.set_timer(timer, 1000)
-        global grab
-        global parent
-        global sentido
-
- 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True
-            screen.blit(tablero2, [0, 0])
-
-
-
+        
+            
+            
+            
             # L=[carga1pos, carga2pos]
             
             # #Crea copia de L en q
@@ -218,61 +320,48 @@ class Gamestate():
             #   for i in L:
                 
             #   for j in q: 
-
+                
         
-
-
-
-            print(sentido)
-            player=Player('player',playerpos.posxn,playerpos.posyn,sentido)
-            carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
-            carga2=Objeto('positivo',(carga2pos.posxn),(carga2pos.posxn))
             
-            #print(carga1pos.posn,'====>',carga1pos.posxn)
-            screen.blit(tablero.image, tablero.posip)
-            screen.blit(UI,[0,0])
-            screen.blit(player.image,player.posip)
-            screen.blit(carga1.image,carga1.posip)
-            screen.blit(carga2.image,carga2.posip)
+        #print(carga1pos.posn,'====>',carga1pos.posxn)
+            
 
-            if event.type == pygame.KEYDOWN:
-              if not grab:
-                  #movimiento jugador
-                  if event.key == pygame.K_DOWN:
-                    playerpos.changepos('down')
-                    sentido='down'
-                  if event.key == pygame.K_UP:
+        if event.type == pygame.KEYDOWN:
+             if not grab:
+                #movimiento jugador
+                if event.key == pygame.K_DOWN:
+                   playerpos.changepos('down')
+                   sentido='down'
+                if event.key == pygame.K_UP:
                     playerpos.changepos('up')
                     sentido='up'
-                  if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT:
                     playerpos.changepos('left')
                     sentido='left'
-                  if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_RIGHT:
                     playerpos.changepos('right')
                     sentido='right'
                   #funcion de coger
 
-                
-
-              if event.key == pygame.K_SPACE:        
+             if event.key == pygame.K_SPACE:
                   grab=True
-                  print('parent fue creado')
+                  #print('parent fue creado')
                   parent,dx,dy=playerpos.parent(carga1pos)
-                  print(parent,dx,dy)
+                  #print(parent,dx,dy)
 
-              if event.key == pygame.K_e:
+             if event.key == pygame.K_e:
                 if grab==True:
                   grab=False
                   player.grab=False
-                  print('grab false')
+                  #print('grab false')
 
             
 
-              if grab==True:
+             if grab==True:
                 player.grab=True
                 
             
-              if player.grab==True:
+             if player.grab==True:
                   if event.key == pygame.K_DOWN:
                     playerpos.changeparent(carga1pos,'down',parent)
                   if event.key == pygame.K_UP:
@@ -281,20 +370,101 @@ class Gamestate():
                     playerpos.changeparent(carga1pos,'left',parent)
                   if event.key == pygame.K_RIGHT:
                     playerpos.changeparent(carga1pos,'right',parent)
+        
 
+        pygame.display.flip()
+
+    def nivel_2(self):
+        #print(sentido)
+        global sentido
+        global grab
+        global parent
+        player=Player('player',playerpos.posxn,playerpos.posyn,sentido)
+        carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
+        carga2=Objeto('positivo',(carga2pos.posxn),(carga2pos.posxn))
+        screen.blit (fondo1, [0, 0])
+        screen.blit(tablero.image, tablero.posip)
+        screen.blit(UI,[0,0])
+        screen.blit(player.image,player.posip)
+        screen.blit(carga1.image,carga1.posip)
+        screen.blit(carga2.image,carga2.posip)
+        coorxy=[8,8]
+        boton3=Boton('pausa','botones/pausa_0.png',coorxy)
+        imagenboton3=boton3.ima
+        screen.blit(imagenboton3,coorxy)
+        if event.type==pygame.MOUSEBUTTONDOWN:
+          if boton3.mouse==True:
+              self.state="menu_pausa"
+        
+        
             
-            #Reloj
-            if event.type == timer: 
-                if timer_sec > 0:
-                    timer_sec -= 1
-                    timer_text = timer_font.render(time.strftime('%M:%S', time.gmtime(timer_sec)), True, (255, 255, 255))
-                    #print(timer_sec)
-                else:
-                      pygame.time.set_timer(timer, 60000)
             
-        screen.blit(timer_text, [300, 300])
+            
+            # L=[carga1pos, carga2pos]
+            
+            # #Crea copia de L en q
+            # while not equilibrio:
+            #   q=[]
+            #   for i in range(len(L)):
+            #     q.append(i)
+            #   print('recurrencia')
+            #   cercania(L)
+
+
+            #   #Verifica si ya no hay interacciones
+            #   for i in L:
                 
+            #   for j in q: 
+                
+        
+            
+        #print(carga1pos.posn,'====>',carga1pos.posxn)
+            
 
+        if event.type == pygame.KEYDOWN:
+             if not grab:
+                #movimiento jugador
+                if event.key == pygame.K_DOWN:
+                   playerpos.changepos('down')
+                   sentido='down'
+                if event.key == pygame.K_UP:
+                    playerpos.changepos('up')
+                    sentido='up'
+                if event.key == pygame.K_LEFT:
+                    playerpos.changepos('left')
+                    sentido='left'
+                if event.key == pygame.K_RIGHT:
+                    playerpos.changepos('right')
+                    sentido='right'
+                  #funcion de coger
+
+             if event.key == pygame.K_SPACE:
+                  grab=True
+                  #print('parent fue creado')
+                  parent,dx,dy=playerpos.parent(carga1pos)
+                  #print(parent,dx,dy)
+
+             if event.key == pygame.K_e:
+                if grab==True:
+                  grab=False
+                  player.grab=False
+                  #print('grab false')
+
+            
+
+             if grab==True:
+                player.grab=True
+                
+            
+             if player.grab==True:
+                  if event.key == pygame.K_DOWN:
+                    playerpos.changeparent(carga1pos,'down',parent)
+                  if event.key == pygame.K_UP:
+                    playerpos.changeparent(carga1pos,'up',parent)
+                  if event.key == pygame.K_LEFT:
+                    playerpos.changeparent(carga1pos,'left',parent)
+                  if event.key == pygame.K_RIGHT:
+                    playerpos.changeparent(carga1pos,'right',parent)
         pygame.display.flip()
 
 
@@ -469,7 +639,6 @@ class pos():
         return posobj
 
 
-
 def cercania(L):
   q=[]
   for i in L:
@@ -524,7 +693,7 @@ def cercania(L):
 
 
 
-sentido='0'
+
 
 game_state = Gamestate()
 
@@ -536,9 +705,7 @@ playerpos=pos(0,0)
 carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
 
 tablero = Objeto('tablero',0,0)
-tablero2 = pygame.image.load("assets/tablero2.png").convert()
-size = (1280, 720)
-screen = pygame.display.set_mode(size)
+
 
 
 
@@ -559,8 +726,11 @@ grab = False
 #print(dir(Gamestate))
 
 while not done:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
  
     game_state.cambia_nivel()
-    clock.tick(1)
+    clock.tick(12)
 
 pygame.quit()
