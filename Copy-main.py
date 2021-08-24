@@ -2,8 +2,7 @@ import pygame
 import cv2
 import numpy
 import time
-
-#Mi primera prueba wiii
+from datetime import datetime
 
 pygame.init()
 pygame.display.set_mode()
@@ -101,7 +100,7 @@ class Grid():
         return p
 
 
-m=Grid(64,(500,100))
+m=Grid(64,(400,120))
 
 
 
@@ -116,16 +115,16 @@ class Player(Objeto):
 
     if sentido=='down':
         self.image=pygame.image.load("assets/perdown.png").convert_alpha()
-        print('cambio abajo')
+        #print('cambio abajo')
     if sentido=='up':
         self.image=pygame.image.load("assets/perup.png").convert_alpha()
-        print('cambio up')
+        # print('cambio up')
     if sentido=='left':
         self.image=pygame.image.load("assets/perleft.png").convert_alpha()
-        print('cambio izquiera')
+        # print('cambio izquiera')
     if sentido=='right':
         self.image=pygame.image.load("assets/perright.png").convert_alpha()
-        print('cambio derecha')
+        # print('cambio derecha')
     else:
         self.image=pygame.image.load("assets/personaje.png").convert_alpha()
 
@@ -160,6 +159,10 @@ class Gamestate():
             #print('intro')
             if event.type==pygame.MOUSEBUTTONDOWN:
                 if boton1.mouse==True:
+                    global timer_limit
+                    global inicio
+                    timer_limit=100
+                    inicio=time.time()
                     self.state='nivel_1'
           
         pygame.display.flip()
@@ -168,20 +171,13 @@ class Gamestate():
 
     def nivel_1(self):
         #Cositas para el Reloj
-        timer_font = pygame.font.SysFont('Consolas', 30)
-        global timer_sec      
-        timer_text = timer_font.render(time.strftime('%M:%S', time.gmtime(timer_sec)), True, (255, 255, 255))
-        timer = pygame.USEREVENT + 1        
-        pygame.time.set_timer(timer, 1000)
+        
+        timer_font = pygame.font.SysFont('Consolas', 40)
+        global timer_limit 
         global grab
         global parent
         global sentido
-<<<<<<< Updated upstream
-
- 
-        for event in pygame.event.get():
-=======
-        
+        global proximo
         
         tactual=inicio-(time.time())
         timer_sec=int(timer_limit+tactual)
@@ -192,38 +188,11 @@ class Gamestate():
         for event in pygame.event.get():
             print('pygame event')
             equilibrio(L)
->>>>>>> Stashed changes
             if event.type == pygame.QUIT:
                 done = True
             screen.blit(tablero2, [0, 0])
 
-<<<<<<< Updated upstream
-
-
-            # L=[carga1pos, carga2pos]
             
-            # #Crea copia de L en q
-            # while not equilibrio:
-            #   q=[]
-            #   for i in range(len(L)):
-            #     q.append(i)
-            #   print('recurrencia')
-            #   cercania(L)
-
-
-            #   #Verifica si ya no hay interacciones
-            #   for i in L:
-                
-            #   for j in q: 
-
-        
-
-
-
-            print(sentido)
-=======
-            
->>>>>>> Stashed changes
             player=Player('player',playerpos.posxn,playerpos.posyn,sentido)
             carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
             carga2=Objeto('positivo',(carga2pos.posxn),(carga2pos.posxn))
@@ -234,8 +203,11 @@ class Gamestate():
             screen.blit(player.image,player.posip)
             screen.blit(carga1.image,carga1.posip)
             screen.blit(carga2.image,carga2.posip)
+            
+            
 
             if event.type == pygame.KEYDOWN:
+              
               if not grab:
                   #movimiento jugador
                   if event.key == pygame.K_DOWN:
@@ -256,15 +228,20 @@ class Gamestate():
 
               if event.key == pygame.K_SPACE:        
                   grab=True
-                  print('parent fue creado')
-                  parent,dx,dy=playerpos.parent(carga1pos)
-                  print(parent,dx,dy)
+                  proximo=proximidad(L, playerpos.posxn, playerpos.posyn)
+                  print('aquí debería existir encontrado =============>')
+                  if proximo==False:
+                      grab=False
+                  if proximo!=False:
+                      #print('parent fue creado')
+                      parent,dx,dy=playerpos.parent(proximo)
+                      #print(parent,dx,dy)
 
               if event.key == pygame.K_e:
                 if grab==True:
                   grab=False
                   player.grab=False
-                  print('grab false')
+                  #print('grab false')
 
             
 
@@ -273,29 +250,23 @@ class Gamestate():
                 
             
               if player.grab==True:
+                  print('aquí debería referenciar encontrado =============>')
                   if event.key == pygame.K_DOWN:
-                    playerpos.changeparent(carga1pos,'down',parent)
+                    playerpos.changeparent(proximo,'down',parent)
                   if event.key == pygame.K_UP:
-                    playerpos.changeparent(carga1pos,'up',parent)
+                    playerpos.changeparent(proximo,'up',parent)
                   if event.key == pygame.K_LEFT:
-                    playerpos.changeparent(carga1pos,'left',parent)
+                    playerpos.changeparent(proximo,'left',parent)
                   if event.key == pygame.K_RIGHT:
-                    playerpos.changeparent(carga1pos,'right',parent)
+                    playerpos.changeparent(proximo,'right',parent)
 
             
             #Reloj
-            if event.type == timer: 
-                if timer_sec > 0:
-                    timer_sec -= 1
-                    timer_text = timer_font.render(time.strftime('%M:%S', time.gmtime(timer_sec)), True, (255, 255, 255))
-                    #print(timer_sec)
-                else:
-                      pygame.time.set_timer(timer, 60000)
-            
-        screen.blit(timer_text, [300, 300])
-                
-
+        timer_text = timer_font.render(datetime.utcfromtimestamp(timer_sec).strftime('%M:%S'), True, (255, 255, 255))
+        screen.blit(UI,[0,0])
+        screen.blit(timer_text, [1100, 25])
         pygame.display.flip()
+
 
 
 class pos():
@@ -470,8 +441,24 @@ class pos():
           #print(posobj, 'Funciona condicion1==========')
         return posobj
 
+def proximidad(L,posxn,posyn):
+    encontrado=False
+    for i in L:
+        k=i.posxn
+        j=i.posyn
+        if abs(k-posxn)==1:
+            return i
+        
+        if abs(j-posyn)==1:
+            return i
+        
+        else:
+            return encontrado
+        
+            
 
 
+#INTERACCIÓN OBJETO A OBJETO
 def cercania(L):
   q=[]
 
@@ -589,13 +576,15 @@ clock = pygame.time.Clock()
 
 done = False
 parent = None
-timer_sec = 60
+timer_limit = 360
 grab = False
+proximo=False
 #print(dir(Gamestate))
-
+inicio=time.time()
 while not done:
- 
+    
     game_state.cambia_nivel()
-    clock.tick(1)
+    clock.tick(60)
+
 
 pygame.quit()
