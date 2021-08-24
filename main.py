@@ -7,6 +7,7 @@ import os
 
 pygame.init()
 pygame.display.set_mode()
+pygame.display.toggle_fullscreen()
 
 pygame.display.set_caption("ELECTROMAG")
 icono = pygame.image.load("assets/neutron.png")
@@ -14,6 +15,8 @@ pygame.display.set_icon(icono)
 
 musica1 = pygame.mixer.music.load("musica1.ogg")
 musica1 = pygame.mixer.music.play(-1)
+
+n = 0
 
 def mouseover(imagen,coordenadas):
     mouse=False
@@ -224,9 +227,7 @@ class Gamestate():
         self.state='intro'
     
     def cambia_nivel(self):
-        # for event in pygame.event.get():
-        #     if event.type == pygame.QUIT:
-        #         done = True
+        
         if self.state=='intro':
             self.intro()
         if self.state=='menu_pausa':
@@ -249,6 +250,8 @@ class Gamestate():
            self.nivel_5()
 
     def intro(self):
+        global done
+        
         coorxy=[640-152,420-32]
         coorxy2=[640-152,420+50]
         boton1=Boton('jugar','botones/jugar_0.png',coorxy)
@@ -261,6 +264,8 @@ class Gamestate():
             screen.blit(imagenboton1,coorxy)
             screen.blit(imagenboton2,coorxy2)
             #print('intro')
+            if event.type == pygame.QUIT:
+                done = True
             if event.type==pygame.MOUSEBUTTONDOWN:
                 if boton1.mouse==True:
                     global timer_limit
@@ -275,6 +280,13 @@ class Gamestate():
           
         pygame.display.flip()
     def niveles(self):
+        global done
+        global carga1pos
+        global carga2pos
+        global playerpos
+        
+        global timer_limit
+        global inicio
         coorxy=[192,232]
         coorxy2=[192+153,232]
         coorxy3=[192+(153*2),232]
@@ -299,19 +311,29 @@ class Gamestate():
             screen.blit(imagenboton4,coorxy4)
             screen.blit(imagenboton5,coorxy5)
             #print('intro')
+            if event.type == pygame.QUIT:
+                done = True
+            
             if event.type==pygame.MOUSEBUTTONDOWN:
                 if boton1.mouse==True:
-                    global timer_limit
-                    global inicio
+                    # global timer_limit
+                    # global inicio
                     timer_limit=100
                     inicio=time.time()
+                    
+                    carga1pos=pos(2,1)
+                    carga2pos=pos(5,5)
+                    playerpos=pos(0,0)
                     self.state='nivel_1'
                 if boton2.mouse==True:
                     # global timer_limit
                     # global inicio
                     timer_limit=100
                     inicio=time.time()
-                    inicio=time.time()
+                    
+                    carga1pos=pos(2,1)
+                    carga2pos=pos(5,5)
+                    playerpos=pos(0,0)
                     self.state='nivel_2'
                 if boton3.mouse==True:
                     # global timer_limit
@@ -319,6 +341,10 @@ class Gamestate():
                     timer_limit=100
                     inicio=time.time()
                     inicio=time.time()
+                    
+                    carga1pos=pos(2,1)
+                    carga2pos=pos(5,5)
+                    playerpos=pos(0,0)
                     self.state='nivel_3'
                 if boton4.mouse==True:
                     # global timer_limit
@@ -326,6 +352,10 @@ class Gamestate():
                     timer_limit=100
                     inicio=time.time()
                     inicio=time.time()
+                    
+                    carga1pos=pos(2,1)
+                    carga2pos=pos(5,5)
+                    playerpos=pos(0,0)
                     self.state='nivel_4'
                 if boton5.mouse==True:
                     # global timer_limit
@@ -333,6 +363,10 @@ class Gamestate():
                     timer_limit=100
                     inicio=time.time()
                     inicio=time.time()
+                    
+                    carga1pos=pos(2,1)
+                    carga2pos=pos(5,5)
+                    playerpos=pos(0,0)
                     self.state='nivel_5'
         pygame.display.flip()
     def salir(self):
@@ -340,6 +374,7 @@ class Gamestate():
         pygame.display.flip()
     
     def menu_pausa(self):
+        global done
         coorxy=[482,232]
         coorxy2=[482,328]
         coorxy3=[482,424]
@@ -355,10 +390,17 @@ class Gamestate():
             screen.blit(imagenboton2,coorxy2)
             screen.blit(imagenboton3,coorxy3)
             #print('intro')
+            if event.type == pygame.QUIT:
+                done = True
+            
             if event.type==pygame.MOUSEBUTTONDOWN:
                 if boton1.mouse==True:
-                    
-                    self.state='nivel_1'
+                    if n == 1:
+                        self.state='nivel_1'
+                    if n == 2:
+                        self.state='nivel_2'
+                    if n == 3:
+                        self.state='nivel_3'
                 if boton2.mouse==True:
                     
                     self.state='niveles'
@@ -374,7 +416,9 @@ class Gamestate():
         global grab
         global parent
         global sentido
-        
+        global done
+        global n
+        n = 1
         
         tactual=inicio-(time.time())
         timer_sec=int(timer_limit+tactual)
@@ -385,8 +429,11 @@ class Gamestate():
         coorxy=[8,8]
         boton3=Boton('pausa','botones/pausa_0.png',coorxy)
         imagenboton3=boton3.ima
-        
+        print("pygame.cycle",timer_text)
         for event in pygame.event.get():
+            
+            if event.type == pygame.QUIT:
+                 done = True
             if event.type==pygame.MOUSEBUTTONDOWN:
                 if boton3.mouse==True:
                     
@@ -440,8 +487,9 @@ class Gamestate():
                     sentido='right'
                   #funcion de coger
 
-                
-
+              if event.key == pygame.K_ESCAPE:
+                  done = True
+              
               if event.key == pygame.K_SPACE:        
                   grab=True
                   #print('parent fue creado')
@@ -485,6 +533,9 @@ class Gamestate():
         global grab
         global parent
         global sentido
+        global done
+        global n
+        n = 2
         
         
         tactual=inicio-(time.time())
@@ -498,6 +549,8 @@ class Gamestate():
         imagenboton3=boton3.ima
         
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                 done = True
             if event.type==pygame.MOUSEBUTTONDOWN:
                 if boton3.mouse==True:
                     
@@ -520,6 +573,7 @@ class Gamestate():
             #   for j in q: 
 
             #print(sentido)
+            
             player=Player('player',playerpos.posxn,playerpos.posyn,sentido)
             carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
             carga2=Objeto('positivo',(carga2pos.posxn),(carga2pos.posxn))
@@ -596,7 +650,9 @@ class Gamestate():
         global grab
         global parent
         global sentido
-        
+        global done
+        global n
+        n = 3
         
         tactual=inicio-(time.time())
         timer_sec=int(timer_limit+tactual)
@@ -609,6 +665,8 @@ class Gamestate():
         imagenboton3=boton3.ima
         
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                 done = True
             if event.type==pygame.MOUSEBUTTONDOWN:
                 if boton3.mouse==True:
                     
@@ -707,7 +765,9 @@ class Gamestate():
         global grab
         global parent
         global sentido
-        
+        global done
+        global n
+        n = 4
         
         tactual=inicio-(time.time())
         timer_sec=int(timer_limit+tactual)
@@ -720,6 +780,8 @@ class Gamestate():
         imagenboton3=boton3.ima
         
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                 done = True
             if event.type==pygame.MOUSEBUTTONDOWN:
                 if boton3.mouse==True:
                     
@@ -818,6 +880,9 @@ class Gamestate():
         global grab
         global parent
         global sentido
+        global done
+        global n
+        n = 5
         
         
         tactual=inicio-(time.time())
@@ -831,6 +896,8 @@ class Gamestate():
         imagenboton3=boton3.ima
         
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                 done = True
             if event.type==pygame.MOUSEBUTTONDOWN:
                 if boton3.mouse==True:
                     
@@ -1138,7 +1205,7 @@ carga1pos=pos(2,1)
 carga2pos=pos(5,5)
 
 playerpos=pos(0,0)
-carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
+#carga1=Objeto('positivo',(carga1pos.posxn),(carga1pos.posyn))
 
 tablero = Objeto('tablero',0,0)
 
@@ -1149,9 +1216,9 @@ screen = pygame.display.set_mode(size)
 
 portada = pygame.image.load("assets/portada.png").convert()
 
-boton1a = pygame.image.load('botones/jugar_0.png').convert_alpha()
-boton1b = pygame.image.load('botones/jugar_1.png').convert_alpha()
-boton1 = Boton('jugar', 'botones/jugar_0.png', [640 - 152, 420 - 32])
+# boton1a = pygame.image.load('botones/jugar_0.png').convert_alpha()
+# boton1b = pygame.image.load('botones/jugar_1.png').convert_alpha()
+# boton1 = Boton('jugar', 'botones/jugar_0.png', [640 - 152, 420 - 32])
 
 UI = pygame.image.load('botones/margenes.png').convert_alpha()
 
@@ -1167,6 +1234,13 @@ while not done:
     
     game_state.cambia_nivel()
     clock.tick(60)
+    # for event in pygame.event.get():
+            # if event.type == pygame.QUIT:
+            #     done = True
+    # for event in pygame.event.get():
+    #         if event.type == pygame.KEYDOWN:
+    #             if event.key == pygame.K_ESCAPE:
+    #                 done = True
     
 pygame.quit()
 
