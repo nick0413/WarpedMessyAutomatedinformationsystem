@@ -13,16 +13,40 @@ screen = pygame.display.set_mode(size)
 w= screen.get_width()
 h=screen.get_height()
 #Colores 
+#Colores 
 black = (0, 0, 0)
 white = (255, 255, 255)
 red = (255, 0, 0)
 amarillo = (255, 255, 0)
 green = (0, 255, 0)
+blue= (0, 0, 255)
+
 FPS = 60
+reloj = pygame.time.Clock()
 x=0
+x_a=0
+
+# Fondos-Imágenes Científicas.
 fondo = pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/Fondopaola.png").convert()
+fondodiana = pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/fondodiana.png").convert()
+fondolise = pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/fondolise.png").convert()
+fondonubia = pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/fondonubia.png").convert()
+fondomarie = pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/fondomarie.png").convert()
+fondorosalind = pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/fondoRosalind.png").convert()
+
 pinilla= pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/2.png").convert()
 pinilla.set_colorkey(red)
+diana= pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/DianaT.png").convert()
+diana.set_colorkey(red)
+lise= pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/lisem.png").convert()
+lise.set_colorkey(white)
+nubia= pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/nubia1.png").convert()
+nubia.set_colorkey(blue)
+marie= pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/mariec.png").convert()
+marie.set_colorkey(amarillo)
+rosalind= pygame.image.load("ImgenesCientificas/Rosalind1.png").convert_alpha()
+rosalind.set_colorkey(blue)
+
 
 def mouseover(imagen,coordenadas):
     mouse=False
@@ -162,7 +186,7 @@ class Player(Objeto):
 
 class Gamestate():
     def __init__(self):
-        self.state='videoCoulomb'
+        self.state='intro'
 
     def cambia_nivel(self):
         if self.state=='intro':
@@ -173,7 +197,17 @@ class Gamestate():
             self.videoCoulomb()
         if self.state=='menu_pausa':
             self.menu_pausa()
-            
+        if self.state=='menu_pausa1':
+            self.menu_pausa1()
+        if self.state=='menu_pausa2':
+            self.menu_pausa2()   
+        if self.state=='menu_pausa3':
+            self.menu_pausa3()   
+        if self.state=='menu_pausa4':
+            self.menu_pausa4()                         
+        if self.state=='menu_pausa5':
+            self.menu_pausa5()
+              
     def menu_pausa(self):
         fondom()        
         for event in pygame.event.get():
@@ -182,6 +216,83 @@ class Gamestate():
                 screen.blit(fondo, [x_a,0])
                 screen.blit(pinilla, [384+400, 104])  
                 k.draw()
+                
+        pygame.display.update()
+        reloj.tick(FPS)
+        pygame.display.flip()
+
+    def menu_pausa1(self):
+        fondomd()        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True 
+                screen.blit(fondodiana, [x_a,0])
+                screen.blit(diana, [384+400, 104])  
+                D.draw()
+                
+        pygame.display.update()
+        reloj.tick(FPS)
+        pygame.display.flip()    
+
+    def menu_pausa2(self):
+        fondoml()        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True 
+                screen.blit(fondolise, [x_a,0])
+                screen.blit(lise, [384+400, 104])  
+                L.draw()
+
+        pygame.display.update()
+        reloj.tick(FPS)                
+        pygame.display.update()
+        reloj.tick(FPS)
+        pygame.display.flip() 
+
+    def menu_pausa3(self):
+        fondomn()        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True 
+                screen.blit(fondonubia, [x_a,0])
+                screen.blit(nubia, [24, 230])  
+                N.draw()
+
+        pygame.display.update()
+        reloj.tick(FPS)                
+        pygame.display.update()
+        reloj.tick(FPS)
+        pygame.display.flip() 
+
+    def menu_pausa4(self):
+        fondomm()        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True 
+                screen.blit(fondomarie, [x_a,0])
+                screen.blit(marie, [384+400, 104])  
+                M.draw()
+
+        pygame.display.update()
+        reloj.tick(FPS)                
+        pygame.display.update()
+        reloj.tick(FPS)
+        pygame.display.flip() 
+
+    def menu_pausa5(self):
+        fondomr()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True 
+                screen.blit(fondorosalind, [x_a,0])
+                screen.blit(rosalind, [0, 200])  
+                R.draw()
+
+        pygame.display.update()
+        reloj.tick(FPS)                
+        pygame.display.update()
+        reloj.tick(FPS)
+        pygame.display.flip()
        
 
               
@@ -225,20 +336,13 @@ class Gamestate():
             if event.type==pygame.MOUSEBUTTONDOWN:
                 if boton1.mouse==True:
                     self.state='nivel_1'
+            if event.type==pygame.MOUSEBUTTONDOWN:
+                if boton2.mouse==True:
+                    self.state='menu_pausa5'
           
         pygame.display.flip()
 
     
-    def fondom():
-        global x
-        x_a = x % fondo.get_rect().width
-        screen.blit(fondo, (x_a - fondo.get_rect().width ,0))
-        if x_a < 1280:
-            screen.blit(fondo,(x_a,0))
-            screen.blit(pinilla, [384+400, 104])
-            k.draw()
-
-        x-=1 
 
     def nivel_1(self):
         #videoCoulomb
@@ -360,20 +464,19 @@ class Gamestate():
         
          
         #Cientifica
-        fondom()        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True 
-                screen.blit(fondo, [x_a,0])
-                screen.blit(pinilla, [384+400, 104])  
-                k.draw()
-       
-
+      # fondom()        
+       # for event in pygame.event.get():
+        #    if event.type == pygame.QUIT:
+         #       done = True 
+          #      screen.blit(fondo, [x_a,0])
+           #     screen.blit(pinilla, [384+400, 104])  
+           #     k.draw()
+      
               
-        pygame.display.update()
+      #  pygame.display.update()
     
-        reloj.tick(FPS)
-        pygame.display.flip()
+    #    reloj.tick(FPS)
+     #   pygame.display.flip()
 
 
 class pos():
@@ -634,14 +737,94 @@ class Text:
                 pygame.time.wait(400)
         self.tfin()
         
+
+def fondom():
+    global x
+    global x_a
+    x_a = x % fondo.get_rect().width
+    screen.blit(fondo, (x_a - fondo.get_rect().width ,0))
+    if x_a < 1280:
+        screen.blit(fondo,(x_a,0))
+        screen.blit(pinilla, [384+400, 104])
+        k.draw()
+
+        x-=1 
+  
+def fondomd():
+    global x
+    global x_a
+ 
+    x_a = x % fondodiana.get_rect().width
+    screen.blit(fondodiana, (x_a - fondodiana.get_rect().width ,0))
+    if x_a < 1280:
+        screen.blit(fondodiana,(x_a,0))
+        screen.blit(diana, [384+300, 104])
+        D.draw()
+
+    x-=1
+        
+def fondoml():
+    global x
+    global x_a
+ 
+    x_a = x % fondolise.get_rect().width
+    screen.blit(fondolise, (x_a - fondolise.get_rect().width ,0))
+    if x_a < 1280:
+        screen.blit(fondolise,(x_a,0))
+        screen.blit(lise, [384+200, 104])
+        L.draw()
+
+    x-=1  
+
+def fondomn():
+    global x
+    global x_a
+ 
+    x_a = x % fondonubia.get_rect().width
+    screen.blit(fondonubia, (x_a - fondonubia.get_rect().width ,0))
+    if x_a < 1280:
+        screen.blit(fondonubia,(x_a,0))
+        screen.blit(nubia, [24, 230])
+        N.draw()
+
+    x-=1      
+
+def fondomm():
+    global x
+    global x_a
+ 
+    x_a = x % fondomarie.get_rect().width
+    screen.blit(fondomarie, (x_a - fondomarie.get_rect().width ,0))
+    if x_a < 1280:
+        screen.blit(fondomarie,(x_a,0))
+        screen.blit(marie, [384+400, 104])
+        M.draw()
+
+    x-=1  
+
+def fondomr():
+    global x
+    global x_a
+    x_a = x % fondorosalind.get_rect().width
+    screen.blit(fondorosalind, (x_a - fondorosalind.get_rect().width ,0))
+    if x_a < 1280:
+        screen.blit(fondorosalind,(x_a,0))
+        screen.blit(rosalind, [0, 200])
+        R.draw()
+
+    x-=1          
         
         
-        
+    
+#Texto Cientifícas        
 k = Text('¡Hola!, soy Paola Pinilla. Astrofísica Colombiana ', (w/2.0,h-650), 35, white ) 
+D = Text('¡Hola!, soy Diana Trujillo. Ingeniera Aeroespacial Colombiana ', (w/2.0,h-650), 35, white ) 
+L = Text('¡Hola!, soy Lise Meitner. Física Nuclear', (w/2.0,h-650), 35, white ) 
+N = Text('¡Hola!, soy Nubia Muñoz. Médica Patóloga Colombiana ', (w/2.0,h-650), 35, white ) 
+M = Text('¡Hola!, soy Marie Curie. Científica Polaca ', (w/2.0,h-650), 35, white ) 
+R = Text('¡Hola!, soy Rosalind Franklin.  ', (w/2.0,h-650), 35, white ) 
 
 #def listapos()
-
-
 
 sentido='0'
 
