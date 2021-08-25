@@ -184,7 +184,7 @@ class Gamestate():
         #print(timer_sec,'=========',tactual)
         pygame.display.update()
         timer_text = timer_font.render(datetime.utcfromtimestamp(timer_sec).strftime('%M:%S'), True, (255, 255, 255))
-        L=[carga1neg_pos, carga1pos_pos,carga2pos_pos]  #,carga3pos,carganeg1,carganeg2,carganet1,carganet2]
+        L=[carga1neg_pos, carga1pos_pos, carga2pos_pos]  #,carga3pos,carganeg1,carganeg2,carganet1,carganet2]
         for event in pygame.event.get():
             #print('pygame event')
             equilibrio(L)
@@ -197,7 +197,7 @@ class Gamestate():
             carga1=Objeto('positivo',(carga1pos_pos.posxn),(carga1pos_pos.posyn))
             carga2=Objeto('positivo',(carga2pos_pos.posxn),(carga2pos_pos.posyn))
             carga3=Objeto('negativo', (carga1neg_pos.posxn), (carga1neg_pos.posyn))
-            
+            maquina=Objeto('maquina', (maquinapos.posxn), (maquinapos.posyn))
             #print(carga1pos.posn,'====>',carga1pos.posxn)
             screen.blit(tablero.image, tablero.posip)
             screen.blit(UI,[0,0])
@@ -205,6 +205,7 @@ class Gamestate():
             screen.blit(carga1.image,carga1.posip)
             screen.blit(carga2.image,carga2.posip)
             screen.blit(carga3.image, carga3.posip)
+            screen.blit(maquina.image, maquina.posip)
             
             
 
@@ -442,11 +443,10 @@ class pos():
           parent='no'
           
         return parent,dx,dy
-          
-          
-          #posobj[1]=self.posn[1]-1
-          #print(posobj, 'Funciona condicion1==========')
+       
         return posobj
+
+
 
 def proximidad(L,posxn,posyn):
     encontrado=False
@@ -454,6 +454,7 @@ def proximidad(L,posxn,posyn):
         k=i.posxn
         j=i.posyn
         print('posicion obj===',k,j,'posicion player===', posxn, posyn)
+        
         if abs(k-posxn)==1 and abs(j-posyn)==0:
             print('k=',k, 'posxn=', posxn)
             return i
@@ -476,12 +477,15 @@ def cercania(L):
   for i in q:    
     k=i.posxn
     j=i.posyn 
-    print('nuevo i', 'k=',k,'j=', j)
+    #print('nuevo i', 'k=',k,'j=', j)
     for o in q:
       g= o.posxn
       h = o.posyn
-      print('nuevo o', 'k=',k,'j=', j)
+      #print('nuevo o', 'k=',k,'j=', j)
 
+
+
+      
 #REPELER 
 
       #REPELER VERTICAL
@@ -542,7 +546,7 @@ def cercania(L):
 #ACABA REPELER
                 
       
- #ATRAER
+#ATRAER
  
      #ATRAER VERTICAL
       if abs(k-g)==2 and abs(j-h)==0:   #uno esta encima del otro
@@ -597,18 +601,37 @@ def cercania(L):
                 q.remove(i)
                 q.remove(o)                
       
-        
+#MISMA POSICIÓN
+      print('tipo i=',i.tipo,'tipo o= ',o.tipo,i.posxn,'-',o.posxn,'===0               ',i.posyn,'-',o.posyn,'=====0')
+      if abs(i.posxn-o.posxn)==0 and abs(i.posyn-o.posyn)==0:
+          print('posiciones iguales')
   return q
+'''          
+          if i.posxn==7:
+              i.posxn=i.posxn-1
+          elif i.posyn==7:
+              i.posyn=i.posyn-1
+          elif i.posxn==0:
+              i.posxn=i.posxn+1
+          elif i.posyn==0:
+              i.posyn=i.posyn+1
+          elif 0<i.posxn<7:
+              i.posyn=i.posyn+1
+          elif 0<i.posyn<7:
+              i.posxn=i.posxn+1
+'''              
+  
+  
 
 def equilibrio(l):
     q=cercania(l)
     if q!=l:
         equi=False
-        print('equilibrio ============>', equi)
+        #print('equilibrio ============>', equi)
     if q==l:
         equi=True
-        print('q y l son iguales')
-        print('equilibrio ============>', equi)   
+        #print('q y l son iguales')
+        #print('equilibrio ============>', equi)   
 
 
 
@@ -631,7 +654,7 @@ carga2net_pos= pos('neutro', [1,5])
 
 
 playerpos=pos('personaje',[0,0])
-
+maquinapos=pos('maquina', [6,2])
 
 tablero = Objeto('tablero',0,0)
 tablero2 = pygame.image.load("assets/tablero2.png").convert()
