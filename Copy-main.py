@@ -1,11 +1,186 @@
 import pygame
+from pygame.locals import *
 import cv2
 import numpy
 import time
 from datetime import datetime
 
+<<<<<<< Updated upstream
 pygame.init()
 pygame.display.set_mode()
+=======
+size = (1280, 720)
+screen = pygame.display.set_mode(size)
+
+
+w= 1280
+h=720
+
+#Colores 
+black = (0, 0, 0)
+white = (255, 255, 255)
+red = (255, 0, 0)
+amarillo = (255, 255, 0)
+green = (0, 255, 0)
+blue= (0, 0, 255)
+
+FPS = 60
+reloj = pygame.time.Clock()
+x=0
+x_a=0
+
+# Fondos-Imágenes Científicas.
+fondo = pygame.image.load("ImagenesCientificas/Fondopaola.png").convert()
+fondodiana = pygame.image.load("ImagenesCientificas/fondodiana.png").convert()
+fondolise = pygame.image.load("ImagenesCientificas/fondolise.png").convert()
+fondonubia = pygame.image.load("ImagenesCientificas/fondonubia.png").convert()
+fondomarie = pygame.image.load("ImagenesCientificas/fondomarie.png").convert()
+fondorosalind = pygame.image.load("ImagenesCientificas/fondoRosalind.png").convert()
+pinilla= pygame.image.load("ImagenesCientificas/2.png").convert()
+pinilla.set_colorkey(red)
+diana= pygame.image.load("ImagenesCientificas/DianaT.png").convert()
+diana.set_colorkey(red)
+lise= pygame.image.load("ImagenesCientificas/lisem.png").convert()
+lise.set_colorkey(white)
+nubia= pygame.image.load("ImagenesCientificas/nubia1.png").convert()
+nubia.set_colorkey(blue)
+marie= pygame.image.load("ImagenesCientificas/mariec.png").convert()
+marie.set_colorkey(amarillo)
+rosalind= pygame.image.load("ImagenesCientificas/Rosalind1.png").convert_alpha()
+rosalind.set_colorkey(blue)
+#VARIABLE NIVEL
+n=0
+#pygame.display.set_mode()
+
+class Text:
+
+    def __init__(self, text, pos, fontsize, color, fontname='Letra/MP16OSF.ttf', ):
+        self.text = text
+        self.len = len(self.text)+1
+        self.pos = pos
+        self.fontname = fontname
+        self.fontsize = fontsize
+        self.fontcolor = Color(color)
+        self.set_font()
+        self.move = True
+     
+            
+    def set_font(self):
+        self.font = pygame.font.Font(self.fontname, self.fontsize)
+     
+    def tfin(self):
+        self.img = self.font.render(self.text, True, self.fontcolor)
+        self.rect = self.img.get_rect()
+        self.rect.center = self.pos
+        screen.blit(self.img, self.rect)
+        #pygame.display.update()
+        
+    def draw(self):
+
+        while self.move:
+            pygame.mixer.music.load("Musica/musicacientificas.mp3")
+            pygame.mixer.music.play(-1)           
+            for n in range(0, self.len):
+                if n == self.len-1:
+                    self.move = False
+                self.img = self.font.render(self.text[0:n], True, self.fontcolor)
+                self.rect = self.img.get_rect()
+                self.rect.center = self.pos
+                R=Rect(self.rect.topleft, (self.rect.width, self.rect.height))
+                pygame.draw.rect(screen, (0,0,0), R)
+                screen.blit(self.img, self.rect)
+                pygame.display.update()
+                pygame.time.wait(400)
+        self.tfin()
+'''        
+'''
+def fondom():
+    global x
+    global x_a
+    x_a = x % fondo.get_rect().width
+    screen.blit(fondo, (x_a - fondo.get_rect().width ,0))
+    if x_a < 1280:
+        screen.blit(fondo,(x_a,0))
+        screen.blit(pinilla, [384+400, 104])
+        k.draw()
+
+        x-=1 
+  
+def fondomd():
+    global x
+    global x_a
+ 
+    x_a = x % fondodiana.get_rect().width
+    screen.blit(fondodiana, (x_a - fondodiana.get_rect().width ,0))
+    if x_a < 1280:
+        screen.blit(fondodiana,(x_a,0))
+        screen.blit(diana, [384+300, 104])
+        D.draw()
+
+    x-=1
+        
+def fondoml():
+    global x
+    global x_a
+ 
+    x_a = x % fondolise.get_rect().width
+    screen.blit(fondolise, (x_a - fondolise.get_rect().width ,0))
+    if x_a < 1280:
+        screen.blit(fondolise,(x_a,0))
+        screen.blit(lise, [384+200, 104])
+        L.draw()
+
+    x-=1  
+
+def fondomn():
+    global x
+    global x_a
+ 
+    x_a = x % fondonubia.get_rect().width
+    screen.blit(fondonubia, (x_a - fondonubia.get_rect().width ,0))
+    if x_a < 1280:
+        screen.blit(fondonubia,(x_a,0))
+        screen.blit(nubia, [24, 230])
+        N.draw()
+
+    x-=1      
+
+def fondomm():
+    global x
+    global x_a
+ 
+    x_a = x % fondomarie.get_rect().width
+    screen.blit(fondomarie, (x_a - fondomarie.get_rect().width ,0))
+    if x_a < 1280:
+        screen.blit(fondomarie,(x_a,0))
+        screen.blit(marie, [384+400, 104])
+        M.draw()
+
+    x-=1  
+
+def fondomr():
+    global x
+    global x_a
+    x_a = x % fondorosalind.get_rect().width
+    screen.blit(fondorosalind, (x_a - fondorosalind.get_rect().width ,0))
+    if x_a < 1280:
+        screen.blit(fondorosalind,(x_a,0))
+        screen.blit(rosalind, [0, 200])
+        R.draw()
+
+    x-=1          
+        
+   
+#Texto Cientifícas        
+k = Text('¡Hola!, soy Paola Pinilla. Astrofísica Colombiana ', (w/2.0,h-650), 35, white ) 
+D = Text('¡Hola!, soy Diana Trujillo. Ingeniera Aeroespacial Colombiana ', (w/2.0,h-650), 35, white ) 
+L = Text('¡Hola!, soy Lise Meitner. Física Nuclear', (w/2.0,h-650), 35, white ) 
+N = Text('¡Hola!, soy Nubia Muñoz. Médica Patóloga Colombiana ', (w/2.0,h-650), 35, white ) 
+M = Text('¡Hola!, soy Marie Curie. Científica Polaca ', (w/2.0,h-650), 35, white ) 
+R = Text('¡Hola!, soy Rosalind Franklin.  ', (w/2.0,h-650), 35, white ) 
+
+
+>>>>>>> Stashed changes
 
 def mouseover(imagen,coordenadas):
     mouse=False
@@ -138,9 +313,147 @@ class Gamestate():
 
     def cambia_nivel(self):
         if self.state=='intro':
+<<<<<<< Updated upstream
             self.intro()
         if self.state=='nivel_1':
             self.nivel_1()
+=======
+           self.intro()
+        if self.state=='menu_pausa':
+           self.menu_pausa()          
+        if self.state=='continuar':
+           self.continuar()
+        if self.state=='salir':
+           self.salir()
+        if self.state=='niveles':
+           self.niveles()    
+        if self.state=='nivel_1':
+           self.nivel_1()
+        if self.state=='nivel_2':
+           self.nivel_2()
+        if self.state=='nivel_3':
+           self.nivel_3()
+        if self.state=='nivel_4':
+           self.nivel_4()
+        if self.state=='nivel_5':
+           self.nivel_5()   
+        if self.state=='info':
+           self.info()
+        if self.state== "videoCoulomb":
+           self.videoCoulomb()
+        if self.state=='videoc_1':
+           self.videoc_1()
+        if self.state=='videoc_2':
+           self.videoc_2()
+        if self.state=='videoc_3':
+           self.videoc_3()   
+        if self.state=='videoc_4':
+           self.videoc_4()   
+        if self.state=='videoc_5':
+           self.videoc_5()                         
+        if self.state=='videoc_6':
+           self.videoc_6()
+           
+    def videoc_1(self):
+        done=False
+        while not done:
+            fondom()        
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True 
+          
+            pygame.display.update()
+            reloj.tick(FPS)
+            pygame.display.flip()           
+           
+    def videoc_2(self):
+        done=False
+        while not done:
+            fondomd()        
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True 
+            pygame.display.update()
+            reloj.tick(FPS)
+            pygame.display.flip()    
+
+    def videoc_3(self):
+        done=False
+        while not done: 
+            fondoml()        
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True 
+            pygame.display.update()
+            reloj.tick(FPS)                
+            pygame.display.flip() 
+
+    def videoc_4(self):
+        done=False
+        while not done:  
+            fondomn()        
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True 
+            pygame.display.update()
+            reloj.tick(FPS)                
+            pygame.display.flip() 
+
+    def videoc_5(self):
+        global tiempo_video
+        tiempo_video=time.time()        
+        done=False
+        while not done:            
+            t=abs(time.time()-tiempo_video)
+            print('t=', t)
+            if t>10:
+                pygame.display.flip()
+                self.state = 'niveles'
+                done = True
+                print('terminar ciclo =====================================================')
+            
+            print('FONDOM')    
+            fondomm()
+                
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True 
+            pygame.display.update()
+            reloj.tick(FPS)                     
+            pygame.display.flip() 
+
+    def videoc_6(self):
+        done=False
+        while not done:
+            fondomr()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True 
+            pygame.display.update()
+            reloj.tick(FPS)                
+            pygame.display.flip()
+            
+    def videoCoulomb(self):
+        coulomb = "Coulomb"
+        num_of_frames = len(os.listdir(coulomb))
+        pygame.mixer.music.load("Musica/musicacoulomb.mp3")
+        pygame.mixer.music.play(-1)
+        for i in range (0, num_of_frames):
+            img1= pygame.image.load(f"Coulomb/myphotos{i}.png")
+            screen.blit(img1, (0,0))
+            pygame.display.update()
+            time.sleep(0.004)
+           
+            self.state='nivel_1'
+            #print(self.state)
+        pygame.display.flip()    
+
+
+
+
+
+
+>>>>>>> Stashed changes
 
     def intro(self):
         coorxy=[640-152,420-32]
@@ -164,7 +477,51 @@ class Gamestate():
                     timer_limit=100
                     inicio=time.time()
                     self.state='nivel_1'
+<<<<<<< Updated upstream
           
+=======
+                    
+                #MENÚ NIVELES    
+                if boton2.mouse==True:                    
+                    inicio=time.time()
+                    #self.state='niveles'
+                    
+                #VIDEO                
+                    self.state='videoc_4'
+                    
+
+                    
+        pygame.display.flip()
+
+    def info(self):
+        global done
+        coorxy=[482,232]        
+        boton1=Boton('continuar','botones/continuar_0.png',coorxy)
+        imagenboton1=boton1.ima
+        for event in pygame.event.get():            
+            screen.blit(tutorial, [0, 0])
+            screen.blit(menu_pausa, [0, 0])
+            coorxy=[482,232]
+            screen.blit(imagenboton1,coorxy)            
+            #SALIR
+            if event.type == pygame.QUIT:
+                done = True
+            if event.type==pygame.MOUSEBUTTONDOWN:
+                if boton1.mouse==True:
+                    if n == 1:
+                        self.state='nivel_1'
+                    if n == 2:
+                        self.state='nivel_2'
+                    if n == 3:
+                        self.state='nivel_3'
+                    if n == 4:
+                        self.state='nivel_4'    
+                    if n == 5:
+                        self.state='nivel_5'
+                
+                
+                    
+>>>>>>> Stashed changes
         pygame.display.flip()
 
 
@@ -660,6 +1017,7 @@ grab = False
 proximo=False
 #print(dir(Gamestate))
 inicio=time.time()
+tiempo_video= time.time()
 while not done:
     
     game_state.cambia_nivel()
