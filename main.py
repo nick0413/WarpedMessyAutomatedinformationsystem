@@ -280,7 +280,7 @@ class Gamestate():
     def videoCoulomb(self):
         coulomb = "Coulomb"
         num_of_frames = len(os.listdir(coulomb))
-        pygame.mixer.music.load("C:/Users/FAMILIA/.spyder-py3/musica/musicacoulomb.mp3")
+        pygame.mixer.music.load("Musica/musicacoulomb.mp3")
         pygame.mixer.music.play(-1)
         for i in range (0, num_of_frames):
             img1= pygame.image.load(f"Coulomb/myphotos{i}.png")
