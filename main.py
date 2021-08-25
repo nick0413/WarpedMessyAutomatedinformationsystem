@@ -265,7 +265,14 @@ class Gamestate():
     def salir(self):
         self.state='intro'
     def continuar(self):
-        self.state='intro'
+        if Gamestate.nivel_1(self):
+            print ("1 a 2")
+            self.state='nivel_2'
+        if Gamestate.nivel_2(self):
+            print("2 a intro")
+            self.state='intro'
+            
+        #pygame.display.flip()
     def menu_pausa(self):
         coorxy=[482,232]
         coorxy2=[482,328]
@@ -282,7 +289,7 @@ class Gamestate():
         screen.blit(imagenboton3,coorxy3)
         if event.type==pygame.MOUSEBUTTONDOWN:
             if boton1.mouse==True:
-                self.state='nivel_1'
+                self.state='continuar'
         if event.type==pygame.MOUSEBUTTONDOWN:
             if boton2.mouse==True:
                 self.state='niveles'
