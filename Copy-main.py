@@ -14,6 +14,44 @@ pygame.display.set_icon(icono)
 musica1 = pygame.mixer.music.load("musica1.ogg")
 musica1 = pygame.mixer.music.play(-1)
 
+size = (1280, 720)
+screen = pygame.display.set_mode(size)
+w= screen.get_width()
+h=screen.get_height()
+
+#Colores 
+black = (0, 0, 0)
+white = (255, 255, 255)
+red = (255, 0, 0)
+amarillo = (255, 255, 0)
+green = (0, 255, 0)
+blue= (0, 0, 255)
+
+FPS = 60
+reloj = pygame.time.Clock()
+x=0
+x_a=0
+
+# Fondos-Imágenes Científicas.
+fondo = pygame.image.load("ImagenesCientificas/Fondopaola.png").convert()
+fondodiana = pygame.image.load("ImagenesCientificas/fondodiana.png").convert()
+fondolise = pygame.image.load("ImagenesCientificas/fondolise.png").convert()
+fondonubia = pygame.image.load("ImagenesCientificas/fondonubia.png").convert()
+fondomarie = pygame.image.load("ImagenesCientificas/fondomarie.png").convert()
+fondorosalind = pygame.image.load("ImagenesCientificas/fondoRosalind.png").convert()
+pinilla= pygame.image.load("ImagenesCientificas/2.png").convert()
+pinilla.set_colorkey(red)
+diana= pygame.image.load("ImagenesCientificas/DianaT.png").convert()
+diana.set_colorkey(red)
+lise= pygame.image.load("ImagenesCientificas/lisem.png").convert()
+lise.set_colorkey(white)
+nubia= pygame.image.load("ImagenesCientificas/nubia1.png").convert()
+nubia.set_colorkey(blue)
+marie= pygame.image.load("ImagenesCientificas/mariec.png").convert()
+marie.set_colorkey(amarillo)
+rosalind= pygame.image.load("ImagenesCientificas/Rosalind1.png").convert_alpha()
+rosalind.set_colorkey(blue)
+#VARIABLE NIVEL
 n=0
 pygame.display.set_mode()
 
@@ -250,6 +288,7 @@ class Gamestate():
            self.intro()
         if self.state=='menu_pausa':
            self.menu_pausa()
+          
         if self.state=='continuar':
            self.continuar()
         if self.state=='salir':
@@ -1494,10 +1533,6 @@ playerpos=pos('personaje',[0,0])
 
 tablero = Objeto('tablero',0,0)
 fondo2 = pygame.image.load("assets/fondo2.png").convert()
-size = (1280, 720)
-screen = pygame.display.set_mode(size)
-
-
 
 portada = pygame.image.load("assets/title card.png").convert()
 
