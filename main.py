@@ -21,30 +21,31 @@ amarillo = (255, 255, 0)
 green = (0, 255, 0)
 blue= (0, 0, 255)
 
+
 FPS = 60
 reloj = pygame.time.Clock()
 x=0
 x_a=0
 
 # Fondos-Imágenes Científicas.
-fondo = pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/Fondopaola.png").convert()
-fondodiana = pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/fondodiana.png").convert()
-fondolise = pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/fondolise.png").convert()
-fondonubia = pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/fondonubia.png").convert()
-fondomarie = pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/fondomarie.png").convert()
-fondorosalind = pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/fondoRosalind.png").convert()
+fondo = pygame.image.load("ImagenesCientificas/Fondopaola.png").convert()
+fondodiana = pygame.image.load("ImagenesCientificas/fondodiana.png").convert()
+fondolise = pygame.image.load("ImagenesCientificas/fondolise.png").convert()
+fondonubia = pygame.image.load("ImagenesCientificas/fondonubia.png").convert()
+fondomarie = pygame.image.load("ImagenesCientificas/fondomarie.png").convert()
+fondorosalind = pygame.image.load("ImagenesCientificas/fondoRosalind.png").convert()
 
-pinilla= pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/2.png").convert()
+pinilla= pygame.image.load("ImagenesCientificas/2.png").convert()
 pinilla.set_colorkey(red)
-diana= pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/DianaT.png").convert()
+diana= pygame.image.load("ImagenesCientificas/DianaT.png").convert()
 diana.set_colorkey(red)
-lise= pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/lisem.png").convert()
+lise= pygame.image.load("ImagenesCientificas/lisem.png").convert()
 lise.set_colorkey(white)
-nubia= pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/nubia1.png").convert()
+nubia= pygame.image.load("ImagenesCientificas/nubia1.png").convert()
 nubia.set_colorkey(blue)
-marie= pygame.image.load("C:/Users/FAMILIA/.spyder-py3/Imagenes/mariec.png").convert()
+marie= pygame.image.load("ImagenesCientificas/mariec.png").convert()
 marie.set_colorkey(amarillo)
-rosalind= pygame.image.load("ImgenesCientificas/Rosalind1.png").convert_alpha()
+rosalind= pygame.image.load("ImagenesCientificas/Rosalind1.png").convert_alpha()
 rosalind.set_colorkey(blue)
 
 
@@ -186,7 +187,7 @@ class Player(Objeto):
 
 class Gamestate():
     def __init__(self):
-        self.state='intro'
+        self.state='videoCoulomb'
 
     def cambia_nivel(self):
         if self.state=='intro':
@@ -209,107 +210,83 @@ class Gamestate():
             self.menu_pausa5()
               
     def menu_pausa(self):
-        fondom()        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True 
-                screen.blit(fondo, [x_a,0])
-                screen.blit(pinilla, [384+400, 104])  
-                k.draw()
-                
-        pygame.display.update()
-        reloj.tick(FPS)
-        pygame.display.flip()
+        done=False
+        while not done:
+            fondom()        
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True 
+          
+            pygame.display.update()
+            reloj.tick(FPS)
+            pygame.display.flip()
 
     def menu_pausa1(self):
-        fondomd()        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True 
-                screen.blit(fondodiana, [x_a,0])
-                screen.blit(diana, [384+400, 104])  
-                D.draw()
-                
-        pygame.display.update()
-        reloj.tick(FPS)
-        pygame.display.flip()    
+        done=False
+        while not done:
+            fondomd()        
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True 
+            pygame.display.update()
+            reloj.tick(FPS)
+            pygame.display.flip()    
 
     def menu_pausa2(self):
-        fondoml()        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True 
-                screen.blit(fondolise, [x_a,0])
-                screen.blit(lise, [384+400, 104])  
-                L.draw()
-
-        pygame.display.update()
-        reloj.tick(FPS)                
-        pygame.display.update()
-        reloj.tick(FPS)
-        pygame.display.flip() 
+        done=False
+        while not done: 
+            fondoml()        
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True 
+            pygame.display.update()
+            reloj.tick(FPS)                
+            pygame.display.flip() 
 
     def menu_pausa3(self):
-        fondomn()        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True 
-                screen.blit(fondonubia, [x_a,0])
-                screen.blit(nubia, [24, 230])  
-                N.draw()
-
-        pygame.display.update()
-        reloj.tick(FPS)                
-        pygame.display.update()
-        reloj.tick(FPS)
-        pygame.display.flip() 
+        done=False
+        while not done:  
+            fondomn()        
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True 
+            pygame.display.update()
+            reloj.tick(FPS)                
+            pygame.display.flip() 
 
     def menu_pausa4(self):
-        fondomm()        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True 
-                screen.blit(fondomarie, [x_a,0])
-                screen.blit(marie, [384+400, 104])  
-                M.draw()
-
-        pygame.display.update()
-        reloj.tick(FPS)                
-        pygame.display.update()
-        reloj.tick(FPS)
-        pygame.display.flip() 
+        done=False
+        while not done:       
+            fondomm()        
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True 
+            pygame.display.update()
+            reloj.tick(FPS)                     
+            pygame.display.flip() 
 
     def menu_pausa5(self):
-        fondomr()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True 
-                screen.blit(fondorosalind, [x_a,0])
-                screen.blit(rosalind, [0, 200])  
-                R.draw()
-
-        pygame.display.update()
-        reloj.tick(FPS)                
-        pygame.display.update()
-        reloj.tick(FPS)
-        pygame.display.flip()
+        done=False
+        while not done:
+            fondomr()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True 
+            pygame.display.update()
+            reloj.tick(FPS)                
+            pygame.display.flip()
        
-
-              
-        pygame.display.update()
-    
-        reloj.tick(FPS)
-      
-        pygame.display.flip()
       
     def videoCoulomb(self):
         coulomb = "Coulomb"
         num_of_frames = len(os.listdir(coulomb))
-        for i in range (0, 20):
+        pygame.mixer.music.load("C:/Users/FAMILIA/.spyder-py3/musica/musicacoulomb.mp3")
+        pygame.mixer.music.play(-1)
+        for i in range (0, num_of_frames):
             img1= pygame.image.load(f"Coulomb/myphotos{i}.png")
             screen.blit(img1, (0,0))
             pygame.display.update()
-            time.sleep(0.02)
+            time.sleep(0.004)
            
             self.state='nivel_1'
             print(self.state)     
@@ -710,7 +687,7 @@ class Text:
         self.fontcolor = Color(color)
         self.set_font()
         self.move = True
-        
+     
             
     def set_font(self):
         self.font = pygame.font.Font(self.fontname, self.fontsize)
@@ -723,7 +700,10 @@ class Text:
         #pygame.display.update()
         
     def draw(self):
+
         while self.move:
+            pygame.mixer.music.load("C:/Users/FAMILIA/.spyder-py3/musica/musicacientificas.mp3")
+            pygame.mixer.music.play(-1)           
             for n in range(0, self.len):
                 if n == self.len-1:
                     self.move = False
