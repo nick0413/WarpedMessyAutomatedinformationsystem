@@ -99,6 +99,15 @@ class Boton():
             if mouse7==False:
                 self.ima = pygame.image.load("botones/2_0.png").convert_alpha()
                 self.mouse=False
+                
+        if self.tipo=='info':
+            mouse11=mouseover("botones/info_1.png",coordenadas)
+            if mouse11==True:
+                self.ima = pygame.image.load("botones/info_1.png").convert_alpha()
+                self.mouse=True
+            if mouse11==False:
+                self.ima = pygame.image.load("botones/info_0.png").convert_alpha()
+                self.mouse=False
 
 class Objeto():
     def __init__(self,nombre,ubx,uby):
@@ -192,6 +201,7 @@ fondo1 = pygame.image.load("assets/fondo1.png").convert()
 fondo_niveles= pygame.image.load("assets/fondo_niveles.png").convert()
 menu_pausa = pygame.image.load("assets/menu_pausa_.png").convert()
 menu_pausa.set_colorkey([0,0,0])
+tutorial = pygame.image.load("assets/tutorial.png").convert()
 class Gamestate():
     def __init__(self):
         self.state='intro'
@@ -211,6 +221,8 @@ class Gamestate():
            self.nivel_1()
         if self.state=='nivel_2':
            self.nivel_2()
+        if self.state=='info':
+           self.info()
         
         
     def intro(self):
@@ -252,7 +264,7 @@ class Gamestate():
         pygame.display.flip()
     def salir(self):
         self.state='intro'
-    def conotinuar(self):
+    def continuar(self):
         self.state='intro'
     def menu_pausa(self):
         coorxy=[482,232]
@@ -279,6 +291,18 @@ class Gamestate():
                 self.state='salir'
         
         pygame.display.flip()
+        
+    def info(self):
+        coorxy2=[482,424]
+        boton2=Boton('continuar','botones/continuar_0.png',coorxy2)
+        imagenboton2=boton2.ima
+        screen.blit(tutorial,[0,0])
+        screen.blit(imagenboton2,coorxy2)
+        if event.type==pygame.MOUSEBUTTONDOWN:
+            if boton2.mouse==True:
+                self.state='continuar'
+                
+        pygame.display.flip()
     def nivel_1(self):
         #print(sentido)
         global sentido
@@ -293,14 +317,20 @@ class Gamestate():
         screen.blit(player.image,player.posip)
         screen.blit(carga1.image,carga1.posip)
         screen.blit(carga2.image,carga2.posip)
-        coorxy=[8,8]
-        boton3=Boton('pausa','botones/pausa_0.png',coorxy)
-        imagenboton3=boton3.ima
-        screen.blit(imagenboton3,coorxy)
+        coorxy1=[8,8]
+        boton1=Boton('pausa','botones/pausa_0.png',coorxy1)
+        imagenboton1=boton1.ima
+        screen.blit(imagenboton1,coorxy1)
+        coorxy2=[0,576]
+        boton2=Boton('info','botones/info_0.png',coorxy2)
+        imagenboton2=boton2.ima
+        screen.blit(imagenboton2,coorxy2)
         if event.type==pygame.MOUSEBUTTONDOWN:
-          if boton3.mouse==True:
+          if boton1.mouse==True:
               self.state="menu_pausa"
-        
+        if event.type==pygame.MOUSEBUTTONDOWN:
+          if boton2.mouse==True:
+              self.state="info"
         
             
             
