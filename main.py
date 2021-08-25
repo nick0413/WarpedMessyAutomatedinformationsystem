@@ -187,7 +187,7 @@ class Player(Objeto):
 
 class Gamestate():
     def __init__(self):
-        self.state='videoCoulomb'
+        self.state='intro'
 
     def cambia_nivel(self):
         if self.state=='intro':
@@ -678,7 +678,7 @@ def cercania(L):
 
 class Text:
 
-    def __init__(self, text, pos, fontsize, color, fontname='C:/Users/FAMILIA/.spyder-py3/Letra/MP16OSF.ttf', ):
+    def __init__(self, text, pos, fontsize, color, fontname='Letra/MP16OSF.ttf', ):
         self.text = text
         self.len = len(self.text)+1
         self.pos = pos
@@ -702,7 +702,7 @@ class Text:
     def draw(self):
 
         while self.move:
-            pygame.mixer.music.load("C:/Users/FAMILIA/.spyder-py3/musica/musicacientificas.mp3")
+            pygame.mixer.music.load("Musica/musicacientificas.mp3")
             pygame.mixer.music.play(-1)           
             for n in range(0, self.len):
                 if n == self.len-1:
